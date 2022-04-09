@@ -1,7 +1,11 @@
 local
    % See project statement for API details.
    % !!! Please remove CWD identifier when submitting your project !!!
-   CWD = '~/OZ/LINFO1104-Maestroz-Group38/' % Put here the **absolute** path to the project files
+   % Put here the **absolute** path to the project files
+
+   % Uncomment one line or the other depending on who you are
+   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   %CWD='PATH/TO/TANIA/DIRECTORY/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -27,6 +31,16 @@ local
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   %/* <partition> est une liste de <partition item> */
+   %⟨partition⟩ : := nil | ⟨partition item⟩ ’|’ ⟨partition⟩
+   %
+   %⟨partition item⟩ : :=
+   %   ⟨note⟩
+   %   | ⟨chord⟩
+   %   | ⟨extended note⟩
+   %   | ⟨extended chord⟩
+   %   | ⟨transformation⟩
 
    fun {PartitionToTimedList Partition}
       % TODO
