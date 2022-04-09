@@ -4,8 +4,8 @@ local
    % Put here the **absolute** path to the project files
 
    % Uncomment one line or the other depending on who you are
-   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   %CWD='PATH/TO/TANIA/DIRECTORY/' % Tania's directory
+   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
