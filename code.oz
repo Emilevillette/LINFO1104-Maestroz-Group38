@@ -3,8 +3,9 @@ local
    % !!! Please remove CWD identifier when submitting your project !!!
    % Put here the **absolute** path to the project files
 
+   %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
    %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
@@ -35,6 +36,7 @@ local
    %/* <partition> est une liste de <partition item> */
    %⟨partition⟩ : := nil | ⟨partition item⟩ ’|’ ⟨partition⟩
    %
+   % FORMAT DE L'ARGUMENT DONNE A PARTITION TO TIMED LIST
    %⟨partition item⟩ : :=
    %   ⟨note⟩
    %   | ⟨chord⟩
@@ -43,7 +45,12 @@ local
    %   | ⟨transformation⟩
 
    fun {PartitionToTimedList Partition}
-      % TODO
+      %{Browse {NoteToExtended Partition.1.1.1}}
+      {Browse Partition.1.1}
+      case Partition
+         of partition(X) then {Browse X}
+         else {Browse "bloc"} 
+      end
       nil
    end
 
@@ -71,7 +78,7 @@ in
    % Add variables to this list to avoid "local variable used only once"
    % warnings.
    {ForAll [NoteToExtended Music] Wait}
-   
+   {Browse {PartitionToTimedList Music}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
