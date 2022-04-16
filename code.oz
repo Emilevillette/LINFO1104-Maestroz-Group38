@@ -45,13 +45,19 @@ local
    %   | ⟨transformation⟩
 
    fun {PartitionToTimedList Partition}
-      %{Browse {NoteToExtended Partition.1.1.1}}
-      {Browse Partition.1.1}
-      case Partition
-         of partition(X) then {Browse X}
-         else {Browse "bloc"} 
+      fun {PartitionToTimedListAcc Partition Acc}
+         {Browse Partition}
+         {Browse Acc}
+         case Partition
+            of [partition(X)] then {PartitionToTimedListAcc X Acc}
+            [] stretch(1: [X] factor:Y) then  {PartitionToTimedListAcc X.2 (stretch(1: [X] factor:Y) | Acc)} 
+            [] drone(X) then {PartitionToTimedListAcc X.2 (X.1 | Acc)}
+            [] transpose(X) then {PartitionToTimedListAcc X.2 (X.1 | Acc)}
+            else  {PartitionToTimedListAcc Partition.2 ({NoteToExtended Partition.1} | Acc)}
+         end
       end
-      nil
+   in
+      {PartitionToTimedListAcc Partition nil}
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
