@@ -5,8 +5,8 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -63,9 +63,11 @@ local
    fun {Mix P2T Music}
       % TODO
       fun {MixAcc P2T Music Acc}
+         {Project.readFile CWD#'wave/animals/cow.wav'}
          %truc du genre pour convertir en 44100 Hz 0.5*(Float, sin (3.141592658979323846*2.0*{IntToFloat I-1}*F))
       end
-      {Project.readFile CWD#'wave/animals/cow.wav'}
+      in {MixAcc P2T Music nil}
+   
    end
 
 
@@ -76,6 +78,7 @@ local
             [] H|T then {ReverseAcc Music.2 Music.1|Acc}
          end
       end
+      in {ReverseAcc Music nil} 
    end
 
    fun {Repeat Amount Music}
@@ -86,47 +89,57 @@ local
             {RepeatAcc Amount-1 Music Acc|Music}
          end
       end
+      in {RepeatAcc Amount Music 0}
    end
 
    fun {Loop Duration Music}
+      MusicCopy = Music
       fun {LoopAcc Duration Music Acc}
          if Duration == 0
             then Acc|nil
          else
             case Music
-               of nil then {LoopAcc Duration-1 Music}
+               of nil then {Loop Duration-1 MusicCopy}
                [] H|T then {LoopAcc Duration-1 T Acc|H}
             end
          end   
       end
+      in {LoopAcc Duration Music nil}
    end
 
    fun {Clip Low High Music}
       fun {ClipAcc Low High Music Acc}
-
+         Acc
       end
+      in {ClipAcc Low High Music nil}
    end
 
    fun {Merge Music}
       fun {MergeAcc Music Acc}
-         
+         Acc
       end
+      in {MergeAcc Music nil} 
    end
 
    fun {Echo Delay Music}
       fun {EchoAcc Delay Music Acc}
-         
+         Acc
       end
+      in {EchoAcc Delay Music nil}  
    end
 
    fun {Fade Start Out Music}
-      fun {FadeAcc Start Out Music Acc} 
+      fun {FadeAcc Start Out Music Acc}
+         Acc
       end
+      in {FadeAcc Start Out Music nil}
    end
 
    fun {Cut Start Finish Music}
-      fun {CutAcc Music Acc} 
+      fun {CutAcc Start Finish Music Acc}
+         Acc
       end
+      in {CutAcc Start Finish Music nil} 
    end
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
