@@ -33,40 +33,29 @@ local
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    fun {StretchPartition PartitionStretch Factor}
-      %{Browse PartitionStretch}
-      fun {StretchPartitionAcc PartitionStretch Factor Acc} 
-         if(PartitionStretch == nil) then
-            Acc
+      if(PartitionStretch == nil) then
+         nil
+      else
+         case PartitionStretch.1
+         of nil then nil
          else
-            case PartitionStretch.1
-            of nil then Acc
-            else
-               {StretchPartitionAcc PartitionStretch.2 Factor ({NoteToExtended PartitionStretch.1 Factor} | Acc)}
-            end
+            {NoteToExtended PartitionStretch.1 Factor} | {StretchPartition PartitionStretch.2 Factor}
          end
       end
-   in
-      
-      {StretchPartitionAcc PartitionStretch Factor nil}
    end
 
    fun {PartitionToTimedList Partition}
-      fun {PartitionToTimedListAcc Partition Acc}
-         if Partition == nil then 
-            Acc
-         else
-            case Partition.1
-               of partition(X) then {PartitionToTimedListAcc X Acc}
-               [] stretch(1:X factor:Y) then  {PartitionToTimedListAcc Partition.2 ({StretchPartition X Y} | Acc)} 
-               [] drone(X) then {PartitionToTimedListAcc Partition.2 (X | Acc)}
-               [] transpose(X) then {PartitionToTimedListAcc Partition.2 (X | Acc)}
-               else  {PartitionToTimedListAcc Partition.2 ({NoteToExtended Partition.1 1.0} | Acc)}
-            end
+      if Partition == nil then 
+         nil
+      else
+         case Partition.1
+            of partition(X) then {PartitionToTimedList X}
+            [] stretch(1:X factor:Y) then  {StretchPartition X Y} | {PartitionToTimedList Partition.2 } 
+            [] drone(X) then X | {PartitionToTimedList Partition.2}
+            [] transpose(X) then X | {PartitionToTimedList Partition.2}
+            else  {NoteToExtended Partition.1 1.0} | {PartitionToTimedList Partition.2}
          end
       end
-   in
-      {Browse Partition}
-      {PartitionToTimedListAcc Partition nil}
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
