@@ -83,8 +83,9 @@ local
    fun {Reverse Music}
       fun {ReverseAcc Music Acc}
          case Music
-         of nil then Acc|nil
-         [] H|T then {ReverseAcc Music.2 Music.1|Acc}
+            of nil then Acc|nil
+            [] H|T then {ReverseAcc Music.2 Music.1|Acc}
+         end
       end
    end
 
@@ -112,12 +113,20 @@ local
    end
 
    fun {Clip Low High Music}
-      fun {ClipAcc Low High Music Acc} 
+      fun {ClipAcc Low High Music Acc}
+
       end
    end
 
-   fun {Echo Delay Decay Music}
-      fun {EchoAcc Delay Decay Music Acc} 
+   fun {Merge Music}
+      fun {MergeAcc Music Acc}
+         
+      end
+   end
+
+   fun {Echo Delay Music}
+      fun {EchoAcc Delay Music Acc}
+         
       end
    end
 
