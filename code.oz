@@ -79,16 +79,21 @@ local
       fun {MixAcc P2T Music Acc}
          {Project.readFile CWD#'wave/animals/cow.wav'}
          %truc du genre pour convertir en 44100 Hz 0.5*(Float, sin (3.141592658979323846*2.0*{IntToFloat I-1}*F))
+         case Music
+            of partition(X) then {P2T X}
+            [] wave(X) then {Project.load X}
+            [] merge(X) then {Merge X}
+         end
       end
       in {MixAcc P2T Music nil}
    
    end
 
    fun {Merge Musics}
-      fun {MergeAcc Music Acc}
-         
+      fun {MergeAcc Musics Acc}
+         Acc
       end
-      in {MergeAcc Music nil} 
+      in {MergeAcc Musics nil} 
    end
 
    fun {Reverse Music}
@@ -129,7 +134,7 @@ local
 
    fun {Clip Low High Music}
       fun {ClipAcc Low High Music Acc}
-         
+         Acc
       end
       in {ClipAcc Low High Music nil}
    end
