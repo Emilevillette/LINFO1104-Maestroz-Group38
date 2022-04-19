@@ -55,6 +55,23 @@ local
          {DronePartition PartitionDrone Nbr-1 (List | PartitionDrone)}
    end
 
+   fun {ComputeDuration Partition Acc}
+      if(Partition == nil) then
+         Acc
+      else
+         case of Partition.1
+         of nil then 0
+         [] note(duration:V instrument:!W name:!X octave:!Y sharp:!Z) then {ComputeDuration Partition.2 (Acc+ V)}
+         [] _|_ then {ComputeDuration Partition.2 (Acc+{ComputeDuration Partition.1 0}}
+         else
+            {ComputeDuration Partition.2 (Acc+1.0)}
+   end
+
+   fun {DurationPartition Duration PartitionDuration}
+      declare Factor in
+         Factor = Duration/{ComputeDuration Partition 0}
+         {PartitionStretch Partition Factor nil}
+   end
 
    fun {PartitionToTimedList Partition}
       if Partition == nil then 
