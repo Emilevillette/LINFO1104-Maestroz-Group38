@@ -64,9 +64,63 @@ local
 
    fun {Mix P2T Music}
       % TODO
+      fun {MixAcc P2T Music Acc}
+         %truc du genre pour convertir en 44100 Hz 0.5*(Float, sin (3.141592658979323846*2.0*{IntToFloat I-1}*F))
+      end
       {Project.readFile CWD#'wave/animals/cow.wav'}
    end
 
+
+   fun {Reverse Music}
+      fun {ReverseAcc Music Acc}
+         case Music
+         of nil then Acc|nil
+         [] H|T then {ReverseAcc Music.2 Music.1|Acc}
+      end
+   end
+
+   fun {Repeat Amount Music}
+      fun {RepeatAcc Amount Music Acc}
+         if Amount == 0 
+            then Acc|nil
+         else
+            {RepeatAcc Amount-1 Music Acc|Music}
+         end
+      end
+   end
+
+   fun {Loop Duration Music}
+      fun {LoopAcc Duration Music Acc}
+         if Duration == 0
+            then Acc|nil
+         else
+            case Music
+               of nil then {LoopAcc Duration-1 Music}
+               [] H|T then {LoopAcc Duration-1 T Acc|H}
+            end
+         end   
+      end
+   end
+
+   fun {Clip Low High Music}
+      fun {ClipAcc Low High Music Acc} 
+      end
+   end
+
+   fun {Echo Delay Decay Music}
+      fun {EchoAcc Delay Decay Music Acc} 
+      end
+   end
+
+   fun {Fade Start Out Music}
+      fun {FadeAcc Start Out Music Acc} 
+      end
+   end
+
+   fun {Cut Start Finish Music}
+      fun {CutAcc Music Acc} 
+      end
+   end
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    Music = {Project.load CWD#'joy.dj.oz'}
