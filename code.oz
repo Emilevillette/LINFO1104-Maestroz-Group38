@@ -13,50 +13,59 @@ local
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    % Translate a note to the extended notation.
-   fun {NoteToExtended Note}
+   fun {NoteToExtended Note Duration}
       case Note
       of Name#Octave then
-         note(name:Name octave:Octave sharp:true duration:1.0 instrument:none)
+         note(name:Name octave:Octave sharp:true duration:Duration instrument:none)
       [] Atom then
          case {AtomToString Atom}
          of [_] then
-            note(name:Atom octave:4 sharp:false duration:1.0 instrument:none)
+            note(name:Atom octave:4 sharp:false duration:Duration instrument:none)
          [] [N O] then
             note(name:{StringToAtom [N]}
                  octave:{StringToInt [O]}
                  sharp:false
-                 duration:1.0
+                 duration:Duration
                  instrument: none)
          end
       end
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-   %/* <partition> est une liste de <partition item> */
-   %⟨partition⟩ : := nil | ⟨partition item⟩ ’|’ ⟨partition⟩
-   %
-   % FORMAT DE L'ARGUMENT DONNE A PARTITION TO TIMED LIST
-   %⟨partition item⟩ : :=
-   %   ⟨note⟩
-   %   | ⟨chord⟩
-   %   | ⟨extended note⟩
-   %   | ⟨extended chord⟩
-   %   | ⟨transformation⟩
-
-   fun {PartitionToTimedList Partition}
-      fun {PartitionToTimedListAcc Partition Acc}
-         {Browse Partition}
-         {Browse Acc}
-         case Partition
-            of [partition(X)] then {PartitionToTimedListAcc X Acc}
-            [] stretch(1: [X] factor:Y) then  {PartitionToTimedListAcc X.2 (stretch(1: [X] factor:Y) | Acc)} 
-            [] drone(X) then {PartitionToTimedListAcc X.2 (X.1 | Acc)}
-            [] transpose(X) then {PartitionToTimedListAcc X.2 (X.1 | Acc)}
-            else  {PartitionToTimedListAcc Partition.2 ({NoteToExtended Partition.1} | Acc)}
+   fun {StretchPartition PartitionStretch Factor}
+      %{Browse PartitionStretch}
+      fun {StretchPartitionAcc PartitionStretch Factor Acc} 
+         if(PartitionStretch == nil) then
+            Acc
+         else
+            case PartitionStretch.1
+            of nil then Acc
+            else
+               {StretchPartitionAcc PartitionStretch.2 Factor ({NoteToExtended PartitionStretch.1 Factor} | Acc)}
+            end
          end
       end
    in
+      
+      {StretchPartitionAcc PartitionStretch Factor nil}
+   end
+
+   fun {PartitionToTimedList Partition}
+      fun {PartitionToTimedListAcc Partition Acc}
+         if Partition == nil then 
+            Acc
+         else
+            case Partition.1
+               of partition(X) then {PartitionToTimedListAcc X Acc}
+               [] stretch(1:X factor:Y) then  {PartitionToTimedListAcc Partition.2 ({StretchPartition X Y} | Acc)} 
+               [] drone(X) then {PartitionToTimedListAcc Partition.2 (X | Acc)}
+               [] transpose(X) then {PartitionToTimedListAcc Partition.2 (X | Acc)}
+               else  {PartitionToTimedListAcc Partition.2 ({NoteToExtended Partition.1 1.0} | Acc)}
+            end
+         end
+      end
+   in
+      {Browse Partition}
       {PartitionToTimedListAcc Partition nil}
    end
 
@@ -85,6 +94,7 @@ in
    % warnings.
    {ForAll [NoteToExtended Music] Wait}
    {Browse {PartitionToTimedList Music}}
+   {Browse "I'm done"}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
