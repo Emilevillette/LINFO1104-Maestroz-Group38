@@ -32,14 +32,16 @@ local
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   fun {StretchPartition PartitionStretch Factor}
+
+
+   fun {StretchPartition PartitionStretch Factor List}
       if(PartitionStretch == nil) then
-         nil
+         List
       else
          case PartitionStretch.1
          of nil then nil
          else
-            {NoteToExtended PartitionStretch.1 Factor} | {StretchPartition PartitionStretch.2 Factor}
+             {StretchPartition PartitionStretch.2 Factor (List | {NoteToExtended PartitionStretch.1 Factor})}
          end
       end
    end
@@ -50,7 +52,7 @@ local
       else
          case Partition.1
             of partition(X) then {PartitionToTimedList X}
-            [] stretch(1:X factor:Y) then  {StretchPartition X Y} | {PartitionToTimedList Partition.2 } 
+            [] stretch(1:X factor:Y) then  {StretchPartition X Y nil}.2 | {PartitionToTimedList Partition.2 } 
             [] drone(X) then X | {PartitionToTimedList Partition.2}
             [] transpose(X) then X | {PartitionToTimedList Partition.2}
             else  {NoteToExtended Partition.1 1.0} | {PartitionToTimedList Partition.2}
@@ -84,6 +86,7 @@ in
    % Add variables to this list to avoid "local variable used only once"
    % warnings.
    {ForAll [NoteToExtended Music] Wait}
+   {Browse Music}
    {Browse {PartitionToTimedList Music}}
    {Browse "I'm done"}
    % Calls your code, prints the result and outputs the result to `out.wav`.
