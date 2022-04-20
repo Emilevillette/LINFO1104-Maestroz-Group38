@@ -72,8 +72,9 @@ local
       end
    end
 
-   fun {DurationPartition Duration PartitionDuration}
-      nil
+   fun {DurationPartition Duration PartitionDuration Factor}
+      Factor = Duration/{ComputeDuration PartitionDuration 0}
+      {StretchPartition PartitionDuration Factor nil}
    end
 
    fun {PartitionToTimedList Partition}
@@ -85,7 +86,7 @@ local
             [] stretch(1:X factor:Y) then  {StretchPartition X Y nil}.2 | {PartitionToTimedList Partition.2} 
             [] drone(note:X amount:Y) then {DronePartition X Y nil}.2 | {PartitionToTimedList Partition.2}
             [] transpose(X) then X | {PartitionToTimedList Partition.2}
-            [] duration(1:X seconds:Y) then {DurationPartition X Y}.2
+            [] duration(1:X seconds:Y) then {DurationPartition X Y 0.0}.2
             [] note(duration:V instrument:W name:X octave:Y sharp:Z) then note(duration:V instrument:W name:X octave:Y sharp:Z) | {PartitionToTimedList Partition.2}
             [] _|_ then {PartitionToTimedList Partition.1} | {PartitionToTimedList Partition.2}
             else  {NoteToExtended Partition.1 1.0} | {PartitionToTimedList Partition.2}
