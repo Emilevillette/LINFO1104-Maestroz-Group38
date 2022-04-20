@@ -40,8 +40,9 @@ local
       else
          case PartitionStretch.1
          of nil then nil
+         [] partition(X) then List | {StretchPartition {PartitionToTimedList X} Factor List}
          [] note(duration:V instrument:W name:X octave:Y sharp:Z) then {StretchPartition PartitionStretch.2 Factor (List | note(duration:V*Factor instrument:W name:X octave:Y sharp:Z))}
-         [] _|_ then {StretchPartition PartitionStretch.2 Factor {PartitionStretch PartitionStretch.1 nil}.2}
+         [] _|_ then {StretchPartition PartitionStretch.2 Factor (List | {StretchPartition PartitionStretch.1 Factor nil}.2)}
          else
              {StretchPartition PartitionStretch.2 Factor (List | {NoteToExtended PartitionStretch.1 Factor})}
          end
@@ -53,24 +54,26 @@ local
          List
       else
          {DronePartition PartitionDrone Nbr-1 (List | PartitionDrone)}
+      end
    end
 
    fun {ComputeDuration Partition Acc}
       if(Partition == nil) then
          Acc
       else
-         case of Partition.1
-         of nil then 0
-         [] note(duration:V instrument:!W name:!X octave:!Y sharp:!Z) then {ComputeDuration Partition.2 (Acc+ V)}
-         [] _|_ then {ComputeDuration Partition.2 (Acc+{ComputeDuration Partition.1 0}}
+         case Partition.1
+         of nil then nil
+         [] partition(X) then {ComputeDuration {PartitionToTimedList X} 0.0}
+         [] note(duration:V instrument:_ name:_ octave:_ sharp:_)  then {ComputeDuration Partition.2 (Acc+V)}
+         [] _|_ then {ComputeDuration Partition.2 (Acc+{ComputeDuration Partition.1 0.0})}
          else
             {ComputeDuration Partition.2 (Acc+1.0)}
+         end
+      end
    end
 
    fun {DurationPartition Duration PartitionDuration}
-      declare Factor in
-         Factor = Duration/{ComputeDuration Partition 0}
-         {PartitionStretch Partition Factor nil}
+      nil
    end
 
    fun {PartitionToTimedList Partition}
@@ -78,10 +81,11 @@ local
          nil
       else
          case Partition.1
-            of partition(X) then {PartitionToTimedList {Append [[c c c]] X}}
+            of partition(X) then {PartitionToTimedList {Append [[c c c]] X}} %TODO: REMOVE THE APPEND
             [] stretch(1:X factor:Y) then  {StretchPartition X Y nil}.2 | {PartitionToTimedList Partition.2} 
             [] drone(note:X amount:Y) then {DronePartition X Y nil}.2 | {PartitionToTimedList Partition.2}
             [] transpose(X) then X | {PartitionToTimedList Partition.2}
+            [] duration(1:X seconds:Y) then {DurationPartition X Y}.2
             [] note(duration:V instrument:W name:X octave:Y sharp:Z) then note(duration:V instrument:W name:X octave:Y sharp:Z) | {PartitionToTimedList Partition.2}
             [] _|_ then {PartitionToTimedList Partition.1} | {PartitionToTimedList Partition.2}
             else  {NoteToExtended Partition.1 1.0} | {PartitionToTimedList Partition.2}
@@ -121,8 +125,8 @@ in
       % NEWMUSIC WITH CHORDS, MUSIC WITHOUT
       % {Browse NewMusic}
       {Browse {PartitionToTimedList Music}}
+      {Browse {ComputeDuration Music 0.0}}
    end
-   {Browse "I'm done"}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
