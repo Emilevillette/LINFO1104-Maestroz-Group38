@@ -43,28 +43,52 @@ local
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   NoteList = notelist(0:shortnote(name:c sharp:false) 1:shortnote(name:c sharp:true) 2:shortnote(name:d sharp:false) 3:shortnote(name:d sharp:true) 4:shortnote(name:e sharp:false) 5:shortnote(name:f sharp:false) 6:shortnote(name:f sharp:true) 7:shortnote(name:g sharp:false) 8:shortnote(name:g sharp:true) 9:shortnote(name:a sharp:false) 10:shortnote(name:a sharp:true) 11:shortnote(name:b sharp:false))
+   NoteList = notelist(0:shortnote(name:c sharp:false) 
+                        1:shortnote(name:c sharp:true)
+                        2:shortnote(name:d sharp:false) 
+                        3:shortnote(name:d sharp:true) 
+                        4:shortnote(name:e sharp:false) 
+                        5:shortnote(name:f sharp:false) 
+                        6:shortnote(name:f sharp:true) 
+                        7:shortnote(name:g sharp:false) 
+                        8:shortnote(name:g sharp:true) 
+                        9:shortnote(name:a sharp:false) 
+                        10:shortnote(name:a sharp:true) 
+                        11:shortnote(name:b sharp:false))
 
-   fun {GetNote ExtendedNote NumberTranspose}
+   fun {TransposeNote ExtendedNote NumberTranspose}
       note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:c octave:5 sharp:true)
    end
 
-   NoteNumberList
+   %NoteNumberList = notenumberlist( shortnote(name:c sharp:false):0
+   %                                 shortnote(name:c sharp:true):1
+   %                                 shortnote(name:d sharp:false):2
+   %                                 shortnote(name:d sharp:true):3
+   %                                 shortnote(name:e sharp:false):4
+   %                                 shortnote(name:f sharp:false):5
+   %                                 shortnote(name:f sharp:true):6
+   %                                 shortnote(name:g sharp:false):7
+   %                                 shortnote(name:g sharp:true):8
+   %                                 shortnote(name:a sharp:false):9
+   %                                 shortnote(name:a sharp:true):10
+   %                                 shortnote(name:b sharp:false):11)
 
    fun {GetNoteNumber ExtendedNote}
       nil
    end
 
-   fun {TransposePartition PartitionTranspose Semitones List}
+   fun {TransposePartition PartitionTranspose Semitones}
       if(PartitionTranspose == nil) then
-         List
+         nil
       else
          case PartitionTranspose.1
          of nil then nil
-         [] partition(X) then {TransposePartition {PartitionToTimedList X} Semitones nil}.2
-         [] note(duration:V instrument:W name:X octave:Y sharp:Z) then nil
+         [] partition(X) then {TransposePartition {PartitionToTimedList X} Semitones}
+         [] note(duration:V instrument:W name:X octave:Y sharp:Z) then {TransposeNote note(duration:V instrument:W name:X octave:Y sharp:Z) Semitones} | {TransposePartition PartitionTranspose.2 Semitones}
+         [] Name#Octave then {TransposeNote {NoteToExtended Name#Octave 1.0} Semitones} | {TransposePartition PartitionTranspose.2 Semitones}
+         [] _|_ then {TransposePartition PartitionTranspose.1 Semitones} | {TransposePartition PartitionTranspose.2 Semitones}
          else
-            nil
+            {TransposeNote {NoteToExtended PartitionTranspose.1 1.0} Semitones} | {TransposePartition PartitionTranspose.2 Semitones}
          end
       end
 
