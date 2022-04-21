@@ -1,4 +1,3 @@
-declare
 PassedTests = {Cell.new 0}
 TotalTests  = {Cell.new 0}
 

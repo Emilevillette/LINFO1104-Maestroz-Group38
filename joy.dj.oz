@@ -1,6 +1,6 @@
 % Ode To Joy
 local
-   Tune = [stretch(factor:3 [c c c [c c#5 c]]) duration(seconds:6 [b c5 d8 [d#3 e f]]) drone(amount:4 [g#5]) b b c5 d5 d5 c5 b a g g a b]
+   Tune = [transpose(semitones:~4 [a4 c#5 [d e f8] a4 c]) stretch(factor:3 [c c c [c c#5 c]]) duration(seconds:6 [b c5 d8 [d#3 e f]]) drone(amount:4 [g#5]) b b c5 d5 d5 c5 b a g g a b]
    End1 = [stretch(factor:1.5 [b]) stretch(factor:0.5 [a]) stretch(factor:2.0 [a])]
    End2 = [stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g])]
    Interlude = [a a b g a stretch(factor:0.5 [b c5])
