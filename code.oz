@@ -68,7 +68,7 @@ local
    %                                 shortnote(name:f sharp:false):5
    %                                 shortnote(name:f sharp:true):6
    %                                 shortnote(name:g sharp:false):7
-   %                                 shortnote(name:g sharp:true):8
+   %                                 shortnote(name:g sh[] nil then skiparp:true):8
    %                                 shortnote(name:a sharp:false):9
    %                                 shortnote(name:a sharp:true):10
    %                                 shortnote(name:b sharp:false):11)
@@ -167,21 +167,23 @@ local
    fun {Mix P2T Music}
       % TODO
       fun {MixAcc P2T Music Acc}
-         {Project.readFile CWD#'wave/animals/cow.wav'}
+        {Project.readFile CWD#'wave/animals/cow.wav'}
          %truc du genre pour convertir en 44100 Hz 0.5*(Float, sin (3.141592658979323846*2.0*{IntToFloat I-1}*F))
          case Music
          of H|T then
             case H
             of samples(X) then
-               {Mix P2T T X|Acc}
+               {MixAcc P2T T X|Acc}
             [] partition(X) then 
-               {Mix P2T T {PartitionFreq P2T X}|Acc}
+               {MixAcc P2T T {PartitionFreq P2T X}|Acc}
             [] wave(X) then 
-               {Mix P2T T {Project.load X}|Acc}
+               {MixAcc P2T T {Project.load CWD#X}|Acc}
             [] merge(X) then 
-               {Mix P2T T {Merge X}|Acc}
-            [] nil then skip
+               {MixAcc P2T T {Merge X}|Acc}
             end
+         else
+            Acc
+         end
       end
       in {MixAcc P2T Music nil}
    end
@@ -193,10 +195,10 @@ local
    fun {PartitionFreq P2T Musics}
       P2T
       fun {PartitionFreqAcc P2T Musics Acc}
-        case P2T
-        of H|T then
-          case H
-          of H|T then
+         case P2T
+         of H|T then
+            case H
+            of H|T then
 
             [] nil then skip
             else
@@ -205,7 +207,7 @@ local
          [] nil then Acc
          end
       end
-      in {PartitionFreqAcc P2T nil} 
+      %in {PartitionFreqAcc P2T nil} 
    end
 
    fun {Merge Musics}
@@ -302,7 +304,7 @@ in
    %{Browse {GetNote 6}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
-   {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    
    % Shows the total time to run your code.
    {Browse {IntToFloat {Time}-Start} / 1000.0}
