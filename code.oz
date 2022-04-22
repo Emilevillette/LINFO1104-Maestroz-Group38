@@ -61,6 +61,7 @@ local
 
    fun {TransposeNote ExtendedNote NumberTranspose}
       if(NumberTranspose >= 0) then
+      %if(true==false) then
          if(ExtendedNote.sharp==false) then
             note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.(({Abs NoteListNumber.(ExtendedNote.name) + NumberTranspose}) mod 12).name) octave:(ExtendedNote.octave + ({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose)} div 12)) sharp:(NoteList.({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose)} mod 12).sharp))
          else
@@ -68,10 +69,10 @@ local
          end
       else
          if(ExtendedNote.sharp==false) then
-            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.((12 - {Abs NoteListNumber.(ExtendedNote.name) + NumberTranspose}) mod 12).name) octave:(ExtendedNote.octave - (({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose)}) div 12)) sharp:(NoteList.((12 - {Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose)}) mod 12).sharp))
+            {Browse ((NoteListNumber.(ExtendedNote.name) + {Abs (NumberTranspose)}) div 12)}
+            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.((NoteListNumber.(ExtendedNote.name) + {Abs (12 + NumberTranspose )}) mod 12).name) octave:(ExtendedNote.octave - ((NoteListNumber.(ExtendedNote.name) + {Abs (NumberTranspose )}) div 12)) sharp:(NoteList.((NoteListNumber.(ExtendedNote.name) + {Abs (12 + NumberTranspose )}) mod 12).sharp))
          else
-            {Browse (({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) div 12)}
-            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.((12 - {Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) mod 12).name) octave:(ExtendedNote.octave - (({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) div 12)) sharp:(NoteList.((12 - {Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) mod 12).sharp))
+            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (12 + NumberTranspose )}) mod 12).name) octave:(ExtendedNote.octave - ((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (NumberTranspose )}) div 12)) sharp:(NoteList.((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (12 + NumberTranspose )}) mod 12).sharp))
          end
       end
    end
