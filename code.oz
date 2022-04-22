@@ -189,24 +189,25 @@ local
    end
 
    fun {Frequence Hauteur}
+      
       Hauteur
    end
 
    fun {PartitionFreq P2T Musics}
       P2T
-      fun {PartitionFreqAcc P2T Musics Acc}
-         case P2T
-         of H|T then
-            case H
-            of H|T then
+      %fun {PartitionFreqAcc P2T Musics Acc}
+         %case P2T
+         %of H|T then
+            %case H
+            %of H|T then
 
-            [] nil then skip
-            else
+           % [] nil then skip
+          %  else
                
-            end
-         [] nil then Acc
-         end
-      end
+         %   end
+        % [] nil then Acc
+       %  end
+      %end
       %in {PartitionFreqAcc P2T nil} 
    end
 
@@ -238,18 +239,9 @@ local
       in {RepeatAcc Amount Music nil}
    end
 
-   fun {Loop Duration Music}
-      MusicCopy = Music
-      fun {LoopAcc Duration Music Acc}
-         if Duration == 0
-            then Acc|nil
-         else
-            case Music
-               of nil then {Loop Duration-1 MusicCopy}
-               [] H|T then {LoopAcc Duration-1 T Acc|H}
-            end
-         end   
-      end
+   fun {Loop Duration Acc}
+         case Duration
+         of 
       in {LoopAcc Duration Music nil}
    end
 
