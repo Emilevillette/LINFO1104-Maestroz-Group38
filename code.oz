@@ -56,8 +56,25 @@ local
                         10:shortnote(name:a sharp:true) 
                         11:shortnote(name:b sharp:false))
 
+   %(NoteList.((NoteListNumber.(ExtendedNote.name) + NumberTranspose) mod 12).sharp)
+   %(NoteList.((NoteListNumber.(ExtendedNote.name) + NumberTranspose) mod 12).name)
+
    fun {TransposeNote ExtendedNote NumberTranspose}
-      note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:c octave:5 sharp:true)
+      if(NumberTranspose >= 0) then
+      %if(true==false) then
+         if(ExtendedNote.sharp==false) then
+            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.(({Abs NoteListNumber.(ExtendedNote.name) + NumberTranspose}) mod 12).name) octave:(ExtendedNote.octave + ({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose)} div 12)) sharp:(NoteList.({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose)} mod 12).sharp))
+         else
+            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.(({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) mod 12).name) octave:(ExtendedNote.octave + (({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) div 12)) sharp:(NoteList.(({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) mod 12).sharp))
+         end
+      else
+         if(ExtendedNote.sharp==false) then
+            {Browse ((NoteListNumber.(ExtendedNote.name) + {Abs (NumberTranspose)}) div 12)}
+            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.((NoteListNumber.(ExtendedNote.name) + {Abs (12 + NumberTranspose )}) mod 12).name) octave:(ExtendedNote.octave - ((NoteListNumber.(ExtendedNote.name) + {Abs (NumberTranspose )}) div 12)) sharp:(NoteList.((NoteListNumber.(ExtendedNote.name) + {Abs (12 + NumberTranspose )}) mod 12).sharp))
+         else
+            note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument name:(NoteList.((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (12 + NumberTranspose )}) mod 12).name) octave:(ExtendedNote.octave - ((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (NumberTranspose )}) div 12)) sharp:(NoteList.((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (12 + NumberTranspose )}) mod 12).sharp))
+         end
+      end
    end
 
    %NoteNumberList = notenumberlist( shortnote(name:c sharp:false):0
@@ -76,6 +93,13 @@ local
    fun {GetNoteNumber ExtendedNote}
       nil
    end
+   NoteListNumber = notelist(c:0
+                             d:2
+                             e:4
+                             f:5
+                             g:7
+                             a:9
+                             b:11)
 
    fun {TransposePartition PartitionTranspose Semitones}
       if(PartitionTranspose == nil) then
@@ -91,7 +115,6 @@ local
             {TransposeNote {NoteToExtended PartitionTranspose.1 1.0} Semitones} | {TransposePartition PartitionTranspose.2 Semitones}
          end
       end
-
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +127,7 @@ local
          of nil then nil
          [] partition(X) then {ComputeDuration {PartitionToTimedList X} 0.0}
          [] note(duration:V instrument:_ name:_ octave:_ sharp:_)  then {ComputeDuration Partition.2 (Acc+V)}
-         [] Name#Octave then {ComputeDuration Partition.2 (Acc+1.0)}
+         [] _#_ then {ComputeDuration Partition.2 (Acc+1.0)}
          [] _|_ then {ComputeDuration Partition.2 (Acc+{GetNoteLength Partition.1.1})}
          else
             {ComputeDuration Partition.2 (Acc+1.0)}
@@ -149,10 +172,10 @@ local
          nil
       else
          case Partition.1
-            of partition(X) then {PartitionToTimedList {Append [[c c c]] X}} %TODO: REMOVE THE APPEND
+            of partition(X) then {PartitionToTimedList X} %TODO: REMOVE THE APPEND
             [] stretch(1:X factor:Y) then  {Append {StretchPartition X Y}  {PartitionToTimedList Partition.2}}
             [] drone(1:X amount:Y) then {Append {DronePartition X Y} {PartitionToTimedList Partition.2}}
-            [] transpose(X) then X | {PartitionToTimedList Partition.2}
+            [] transpose(1:X semitones:Y) then {Append {TransposePartition X Y} {PartitionToTimedList Partition.2}}
             [] duration(1:X seconds:Y) then {Append {DurationPartition {IntToFloat Y} X} {PartitionToTimedList Partition.2}}
             [] note(duration:V instrument:W name:X octave:Y sharp:Z) then note(duration:V instrument:W name:X octave:Y sharp:Z) | {PartitionToTimedList Partition.2}
             [] _|_ then {PartitionToTimedList Partition.1} | {PartitionToTimedList Partition.2}
@@ -284,6 +307,7 @@ in
    {Property.put print print(width:1000)}
    {Property.put print print(depth:1000)}
    Start = {Time}
+   {Browse {NoteToExtended a#3 1.0}}
    % Uncomment next line to run your tests.
    % {Test Mix PartitionToTimedList}
 
