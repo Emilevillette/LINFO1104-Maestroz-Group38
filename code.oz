@@ -292,25 +292,6 @@ local
    {Browse {Multiply 0.5#[5.0 6.0 5.0]}}
 
    declare
-   fun {Multiply1 Music}
-      fun {Multiply1Acc Music X Acc}
-         case Music
-         of H|T then
-            {Multiply1Acc T X {Append Acc H*X}}
-         [] nil then
-            Acc
-         end
-      end
-      in 
-         case Music
-         of nil then nil
-         [] L#M then 
-            {Multiply1Acc M L nil}
-         end
-   end
-   {Browse {Multiply1 0.5#[5.0 6.0 5.0]}}
-
-   declare
    fun {Reverse Music}
       fun {ReverseAcc Music Acc}
          case Music
