@@ -307,7 +307,7 @@ local
          {ReverseAcc Music nil}
    end
 
-   declare
+
    fun {Repeat Amount Music}
       fun {RepeatAcc Amount Music Music1 Acc}
          if Music == nil then
