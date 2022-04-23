@@ -260,25 +260,36 @@ local
    end
 
    declare
+   fun {Intensity Music}
+      case Music
+      of X#L 
+         then X
+      else 
+         nil
+      end
+   end
+
+   declare
    fun {Multiply Music}
       fun {MultiplyAcc Music X Acc}
-         case Music
-         of X#L then
-            case L
-            of H|T then
-               {MultiplyAcc T X {Append Acc H*X}}
-            [] nil then
+         if Music == nil then
+            nil
+         else
+            {Browse Music}
+            {Browse Acc}
+            case Music.1
+            of nil then
                Acc
+            [] H then
+               {Append Acc H*X} | {MultiplyAcc Music.2 X Acc}
             end
-         [] H|T then
-            {MultiplyAcc T X {Append Acc H*X}}
-         [] nil then
-            Acc
          end
       end
       in 
-         {MultiplyAcc Music 0 nil}
+         {MultiplyAcc Music.2 {Intensity Music} nil}
    end
+
+   {Browse {Multiply 0.5#[5.0 6.0 5.0]}}
 
    declare
    fun {Multiply1 Music}
@@ -297,7 +308,6 @@ local
             {Multiply1Acc M L nil}
          end
    end
-
    {Browse {Multiply1 0.5#[5.0 6.0 5.0]}}
 
    declare
