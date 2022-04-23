@@ -13,6 +13,7 @@ local
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    % Translate a note to the extended notation.
+
    fun {NoteToExtended Note Duration}
       case Note
       of Name#Octave then
@@ -55,7 +56,7 @@ local
                         9:shortnote(name:a sharp:false) 
                         10:shortnote(name:a sharp:true) 
                         11:shortnote(name:b sharp:false))
-
+  
    fun {TransposeNote ExtendedNote NumberTranspose}
       if(NumberTranspose >= 0) then
          if(ExtendedNote.sharp==false) then
@@ -97,6 +98,7 @@ local
    %                                 shortnote(name:a sharp:false):9
    %                                 shortnote(name:a sharp:true):10
    %                                 shortnote(name:b sharp:false):11)
+   
 
    fun {GetNoteNumber ExtendedNote}
       nil
@@ -108,7 +110,7 @@ local
                              g:7
                              a:9
                              b:11)
-
+                   
    fun {TransposePartition PartitionTranspose Semitones}
       if(PartitionTranspose == nil) then
          nil
@@ -128,6 +130,7 @@ local
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
    fun {ComputeDuration Partition Acc}
       if(Partition == nil) then
          Acc
@@ -144,6 +147,7 @@ local
          end
       end
    end
+
 
    fun {GetNoteLength Note}
       case Note
@@ -178,6 +182,7 @@ local
       end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
    fun {PartitionToTimedList Partition}
       if Partition == nil then 
@@ -225,13 +230,14 @@ local
       in {MixAcc P2T Music nil}
    end
 
+
    fun {Frequence Hauteur}
       Hauteur
    end
 
+
    fun {PartitionFreq P2T Musics}
-      B = 'buaaaaa'
-      B
+      'tamere'
       %fun {PartitionFreqAcc P2T Musics Acc}
          %case P2T
          %of H|T then
@@ -248,10 +254,10 @@ local
       %in {PartitionFreqAcc P2T nil} 
    end
 
+
    fun {Merge Musics}
       fun {MergeAcc Musics Acc}
-         B ='test'
-         B
+         Acc
          %case Musics
          %of H|T then
           %  case H
@@ -259,7 +265,7 @@ local
       in {MergeAcc Musics nil} 
    end
 
-   declare
+
    fun {Intensity Music}
       case Music
       of X#L 
@@ -269,7 +275,6 @@ local
       end
    end
 
-   declare
    fun {Multiply Music}
       fun {MultiplyAcc Music X Acc}
          if Music == nil then
@@ -291,7 +296,7 @@ local
 
    {Browse {Multiply 0.5#[5.0 6.0 5.0]}}
 
-   declare
+
    fun {Reverse Music}
       fun {ReverseAcc Music Acc}
          case Music
@@ -305,7 +310,7 @@ local
          {ReverseAcc Music nil}
    end
 
-   declare
+
    fun {Repeat Amount Music}
       fun {RepeatAcc Amount Music Acc}
          if Amount == 0 
@@ -325,12 +330,6 @@ local
 
 
    {Browse {Repeat 5 [0.9 9.0 4.0]}}
-
-   fun {Loop Duration Acc}
-         case Duration
-         of 
-      in {LoopAcc Duration Music nil}
-   end
 
    fun {Clip Low High Music}
       fun {ClipAcc Low High Music Acc}
