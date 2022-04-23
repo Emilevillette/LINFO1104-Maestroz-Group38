@@ -229,8 +229,7 @@ local
       end
       in {MixAcc P2T Music nil}
    end
-
-
+      
    fun {Frequence Hauteur}
       Hauteur
    end
@@ -280,8 +279,6 @@ local
          if Music == nil then
             nil
          else
-            {Browse Music}
-            {Browse Acc}
             case Music.1
             of nil then
                Acc
@@ -313,23 +310,29 @@ local
 
    fun {Repeat Amount Music}
       fun {RepeatAcc Amount Music Acc}
-         if Amount == 0 
-            then Acc|nil
+         if Music == nil then
+            nil
          else
-            case Music
-            of nil then
-               {RepeatAcc Amount-1 Acc|nil Acc}
-            [] H|T then
-               {RepeatAcc Amount T {Append Acc H}}
+            if Amount == 0 then
+               Acc
+            else
+               case Music.1
+               of nil then
+                  {RepeatAcc Amount-1 Acc|nil Acc}
+               [] H then
+                  {Append Acc H} | {RepeatAcc Amount Music.2 Acc}
+               end
             end
          end
       end
       in {RepeatAcc Amount Music nil}
    end
 
-
-
    {Browse {Repeat 5 [0.9 9.0 4.0]}}
+
+   fun {Loop Duration Music}
+      'bruhhhhh'
+   end
 
    fun {Clip Low High Music}
       fun {ClipAcc Low High Music Acc}
