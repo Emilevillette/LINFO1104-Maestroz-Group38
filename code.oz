@@ -203,6 +203,7 @@ local
                {MixAcc P2T T {Project.load CWD#X}|Acc}
             [] merge(X) then 
                {MixAcc P2T T {Merge X}|Acc}
+            %filtres
             end
          else
             Acc
@@ -212,12 +213,12 @@ local
    end
 
    fun {Frequence Hauteur}
-      
       Hauteur
    end
 
    fun {PartitionFreq P2T Musics}
-      P2T
+      B = 'buaaaaa'
+      B
       %fun {PartitionFreqAcc P2T Musics Acc}
          %case P2T
          %of H|T then
@@ -236,19 +237,51 @@ local
 
    fun {Merge Musics}
       fun {MergeAcc Musics Acc}
-         Acc
+         B ='test'
+         B
+         %case Musics
+         %of H|T then
+          %  case H
       end
       in {MergeAcc Musics nil} 
    end
 
+   declare
+   fun {Multiply Music}
+      fun {MultiplyAcc Music X Acc}
+         {Browse Music}
+         case Music
+         of X#L then
+            case L
+            of H|T then
+               {MultiplyAcc T X {Append Acc H*X}}
+            else 
+               Acc
+            end
+         [] H|T then
+            {MultiplyAcc T X {Append Acc H*X}}
+         else 
+            Acc
+         end
+      end
+      in
+         {MultiplyAcc Music 0 nil}
+   end
+
+   {Browse {Multiply 0.5#[5.0 6.0 5.0]}}
+
+   declare
    fun {Reverse Music}
       fun {ReverseAcc Music Acc}
          case Music
-            of nil then Acc|nil
-            [] H|T then {ReverseAcc T H|Acc}
+         of H|T then
+            {ReverseAcc T {Append H|nil Acc}}
+         else
+            Acc
          end
       end
-      in {ReverseAcc Music nil} 
+      in 
+         {ReverseAcc Music nil}
    end
 
    fun {Repeat Amount Music}
