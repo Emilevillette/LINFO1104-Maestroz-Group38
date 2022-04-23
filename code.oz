@@ -265,26 +265,43 @@ local
    declare
    fun {Multiply Music}
       fun {MultiplyAcc Music X Acc}
-         {Browse Music}
          case Music
          of X#L then
             case L
             of H|T then
                {MultiplyAcc T X {Append Acc H*X}}
-            else 
+            [] nil then
                Acc
             end
          [] H|T then
             {MultiplyAcc T X {Append Acc H*X}}
-         else 
+         [] nil then
             Acc
          end
       end
-      in
+      in 
          {MultiplyAcc Music 0 nil}
    end
 
-   {Browse {Multiply 0.5#[5.0 6.0 5.0]}}
+   declare
+   fun {Multiply1 Music}
+      fun {Multiply1Acc Music X Acc}
+         case Music
+         of H|T then
+            {Multiply1Acc T X {Append Acc H*X}}
+         [] nil then
+            Acc
+         end
+      end
+      in 
+         case Music
+         of nil then nil
+         [] L#M then 
+            {Multiply1Acc M L nil}
+         end
+   end
+
+   {Browse {Multiply1 0.5#[5.0 6.0 5.0]}}
 
    declare
    fun {Reverse Music}
@@ -300,16 +317,26 @@ local
          {ReverseAcc Music nil}
    end
 
+   declare
    fun {Repeat Amount Music}
       fun {RepeatAcc Amount Music Acc}
          if Amount == 0 
             then Acc|nil
          else
-            {RepeatAcc Amount-1 Music Acc|Music}
+            case Music
+            of nil then
+               {RepeatAcc Amount-1 Acc|nil Acc}
+            [] H|T then
+               {RepeatAcc Amount T {Append Acc H}}
+            end
          end
       end
       in {RepeatAcc Amount Music nil}
    end
+
+
+
+   {Browse {Repeat 5 [0.9 9.0 4.0]}}
 
    fun {Loop Duration Acc}
          case Duration
