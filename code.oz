@@ -56,9 +56,6 @@ local
                         10:shortnote(name:a sharp:true) 
                         11:shortnote(name:b sharp:false))
 
-   %(NoteList.((NoteListNumber.(ExtendedNote.name) + NumberTranspose) mod 12).sharp)
-   %(NoteList.((NoteListNumber.(ExtendedNote.name) + NumberTranspose) mod 12).name)
-
    fun {TransposeNote ExtendedNote NumberTranspose}
       if(NumberTranspose >= 0) then
          if(ExtendedNote.sharp==false) then
@@ -77,12 +74,12 @@ local
             note(duration:ExtendedNote.duration 
                   instrument:ExtendedNote.instrument 
                   name:(NoteList.((NoteListNumber.(ExtendedNote.name) + {Abs (12 + NumberTranspose )}) mod 12).name) 
-                  octave:(ExtendedNote.octave - ((NoteListNumber.(ExtendedNote.name) + {Abs (NumberTranspose )}) div 12)) 
+                  octave:(ExtendedNote.octave + {FloatToInt {Floor ({IntToFloat (NoteListNumber.(ExtendedNote.name) + NumberTranspose)} / 12.0)}}) 
                   sharp:(NoteList.((NoteListNumber.(ExtendedNote.name) + {Abs (12 + NumberTranspose )}) mod 12).sharp))
          else
             note(duration:ExtendedNote.duration instrument:ExtendedNote.instrument 
                   name:(NoteList.((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (12 + NumberTranspose )}) mod 12).name) 
-                  octave:(ExtendedNote.octave - ((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (NumberTranspose )}) div 12)) 
+                  octave:(ExtendedNote.octave + {FloatToInt {Floor ({IntToFloat (NoteListNumber.(ExtendedNote.name) + 1 + NumberTranspose)} / 12.0)}}) 
                   sharp:(NoteList.((NoteListNumber.(ExtendedNote.name) + 1 + {Abs (12 + NumberTranspose )}) mod 12).sharp))
          end
       end
