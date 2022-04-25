@@ -291,6 +291,10 @@ local
          {MultiplyAcc Music.2 {Intensity Music} nil}
    end
 
+   fun {AddElementLists L}
+      L
+   end
+
    {Browse {Multiply 0.5#[5.0 6.0 5.0]}}
 
 
@@ -313,8 +317,6 @@ local
          if Music == nil then
             {RepeatAcc Amount-1 Music1 Music1 Acc}
          else
-            {Browse Amount}
-            {Browse Acc}
             if Amount == 0 then
                Acc
             else
