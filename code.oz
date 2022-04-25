@@ -234,11 +234,18 @@ local
          [] silence(duration:_) then 0 | {PartitionFreq Music.2}
          [] _|_ then {PartitionFreq Music.1} | {PartitionFreq Music.2}
          else
-            {Frequency {GetNoteHeight Music.1}} | {PartitionFreq Music.2}
+            {Append {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0} {PartitionFreq Music.2}}
          end
       end
    end
 
+   fun {SampleFrequency Frequency NumberOfSamples Pos}
+      if(Pos >= NumberOfSamples) then
+         nil
+      else
+          0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0} 
+      end
+   end
 
    fun {Merge Musics}
       fun {MergeAcc Musics Acc}
