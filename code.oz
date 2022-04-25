@@ -217,7 +217,7 @@ local
       {Pow 2.0 ({IntToFloat Hauteur}/12.0)} * 440.0
    end
 
-   fun{GetNoteHeight ExtendedNote}
+   fun{GetNoteHeight ExtendedNote} %TODO: CHECK IF THERE NEEDS TO BE A SPECIAL PROCESSING FOR CHORDS, NO MENTION OF IT IN THE SPECIFIATIONS
       if(ExtendedNote.sharp == false) then
          (NoteListNumber.(ExtendedNote.name) - NoteListNumber.a) + (12*ExtendedNote.octave - 48) 
       else
