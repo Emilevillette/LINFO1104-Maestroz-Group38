@@ -239,7 +239,7 @@ local
       end
    end
 
-   declare
+   
    fun {SampleFrequency Frequency NumberOfSamples Pos}
       if(Pos >= NumberOfSamples) then
          nil
@@ -258,7 +258,7 @@ local
    end
    {Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
 
-   declare
+   
    fun {Intensity Music}
       case Music
       of X#L 
@@ -268,7 +268,7 @@ local
       end
    end
 
-   declare
+   
    fun {Multiply Music}
       fun {MultiplyAcc Music X Acc}
          case Music
@@ -282,7 +282,7 @@ local
    end
    {Browse {Multiply 0.5#[5.0 6.0 8.0]}}
 
-   declare
+   
    fun {SumTwoLists L1 L2}
       fun {SumTwoListsAcc L1 L2 Acc}
          case L1 # L2
@@ -300,7 +300,7 @@ local
    end
    {Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
 
-   declare
+   
    fun {Reverse Music}
       fun {ReverseAcc Music Acc}
          case Music
@@ -314,7 +314,7 @@ local
          {ReverseAcc Music nil}
    end
 
-   declare
+   
    fun {Repeat Amount Music}
       fun {RepeatAcc Amount Music Music1 Acc}
          if Music == nil then
@@ -335,7 +335,7 @@ local
       in {RepeatAcc Amount Music Music nil}
    end
 
-   declare
+   
    fun {Repeat2 Amount Music}
       fun {RepeatAcc Amount Music LoopMusic Acc}
          if Amount == 0 then {Reverse Acc}
