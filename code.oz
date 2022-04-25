@@ -205,13 +205,34 @@ local
             [] merge(X) then 
                {MixAcc P2T T {Merge X}|Acc}
             %filtres
+            %[] loop(seconds:X 1:Y) then {MixAcc P2T T {Loop X {Mix P2T Y} {MusicLength {Mix P2T Y} 0.0}}|Acc}
             end
          else
-            Acc
+            Acc | nil
          end
       end
-      in {MixAcc P2T Music nil}
+      in
+         {Flatten {MixAcc P2T Music nil}}
    end
+
+   fun{Mix2 P2T Music}
+      if(Music==nil) then
+         nil
+      else
+         case Music.1
+         of nil then nil
+         [] samples(X) then {Append X {Mix P2T Music.2}}
+         [] partition(X) then {Append {PartitionFreq {P2T X}} {Mix P2T Music.2}}
+         [] wave(X) then {Append {Project.load (CWD#X)} {Mix P2T Music.2}}
+         [] merge(X) then {Append {Merge X} {Mix P2T Music.2}}
+         [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {List.length Y}/44100.0} {Mix P2T Music.2}}
+         else
+            nil
+         end
+      end
+   end
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun {Frequency Hauteur}
       {Pow 2.0 ({IntToFloat Hauteur}/12.0)} * 440.0
@@ -231,7 +252,7 @@ local
       else
          case Music.1
          of nil then nil
-         [] silence(duration:_) then 0 | {PartitionFreq Music.2}
+         [] silence(duration:_) then {Append {SampleFrequency 0.0 Music.1.duration*44100.0 0.0} {PartitionFreq Music.2}}
          [] _|_ then {PartitionFreq Music.1} | {PartitionFreq Music.2}
          else
             {Append {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0} {PartitionFreq Music.2}}
@@ -239,14 +260,15 @@ local
       end
    end
 
-   
    fun {SampleFrequency Frequency NumberOfSamples Pos}
       if(Pos >= NumberOfSamples) then
          nil
       else
-          0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0} 
+          0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0}
       end
    end
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun {Merge Musics}
       fun {MergeAcc Musics Acc}
@@ -256,8 +278,6 @@ local
       end
       in {MergeAcc Musics nil} 
    end
-   {Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
-
    
    fun {Intensity Music}
       case Music
@@ -268,7 +288,6 @@ local
       end
    end
 
-   
    fun {Multiply Music}
       fun {MultiplyAcc Music X Acc}
          case Music
@@ -280,7 +299,6 @@ local
       in 
          {MultiplyAcc Music.2 {Intensity Music} nil}
    end
-   {Browse {Multiply 0.5#[5.0 6.0 8.0]}}
 
    
    fun {SumTwoLists L1 L2}
@@ -298,7 +316,6 @@ local
    in
       {SumTwoListsAcc L1 L2 nil}
    end
-   {Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
 
    
    fun {Reverse Music}
@@ -325,10 +342,16 @@ local
       in {RepeatAcc Amount Music Music nil}
    end
 
-   {Browse {Repeat 5 [0.9 9.0 4.0]}}
-
-   fun {Loop Duration Music}
-      'bruhhhhh'
+   
+   fun {Loop Duration Music MusicLength}
+      {Browse "IM HERERERERERERERERERERE"}
+      if(Duration>0.0 andthen Duration<MusicLength) then
+         {List.take Music Duration*44100.0}
+      else if(Duration>=MusicLength) then
+         {Append Music {Loop Duration-MusicLength Music MusicLength}}
+      else
+         nil end
+      end
    end
 
    fun {Clip Low High Music}
@@ -378,12 +401,22 @@ in
    {ForAll [NoteToExtended Music] Wait}
    %{Browse Music}
    %{Browse {PartitionToTimedList Music}}
-   {Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
-   {Browse {Mix PartitionToTimedList Music}}
+   %{Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
+   %{Browse {Mix2 PartitionToTimedList Music}}
+   %{Browse {Mix PartitionToTimedList [loop(1:Music seconds:15)]}}
+   %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
+   %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
+   %{Browse {Repeat 5 [0.9 9.0 4.0]}}
+   %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
-   %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
-   
+   %{Browse {PartitionToTimedList Music}}
+   {Browse {Project.run Mix2 PartitionToTimedList Music 'out.wav'}}
+   %{Browse Music}
+
+   %{Browse {Mix2 PartitionToTimedList [partition([a b c#4])]}}
+   %{Browse {Project.run Mix2 PartitionToTimedList [partition([b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [b]) stretch(factor:0.5 [a]) stretch(factor:2.0 [a]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g])]) ] 'out.wav'}}
+   %{Browse {Project.run Mix2 PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence])])] 'out.wav'}}
    % Shows the total time to run your code.
    {Browse {IntToFloat {Time}-Start} / 1000.0}
 end
