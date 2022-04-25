@@ -5,8 +5,8 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -86,23 +86,6 @@ local
       end
    end
 
-   %NoteNumberList = notenumberlist( shortnote(name:c sharp:false):0
-   %                                 shortnote(name:c sharp:true):1
-   %                                 shortnote(name:d sharp:false):2
-   %                                 shortnote(name:d sharp:true):3
-   %                                 shortnote(name:e sharp:false):4
-   %                                 shortnote(name:f sharp:false):5
-   %                                 shortnote(name:f sharp:true):6
-   %                                 shortnote(name:g sharp:false):7
-   %                                 shortnote(name:g sh[] nil then skiparp:true):8
-   %                                 shortnote(name:a sharp:false):9
-   %                                 shortnote(name:a sharp:true):10
-   %                                 shortnote(name:b sharp:false):11)
-   
-
-   fun {GetNoteNumber ExtendedNote}
-      nil
-   end
    NoteListNumber = notelist(c:0
                              d:2
                              e:4
@@ -386,8 +369,6 @@ in
    {ForAll [NoteToExtended Music] Wait}
    {Browse Music}
    {Browse {PartitionToTimedList Music}}
-   %{Browse {DurationPartition 6.0 [b c5 d8]}}
-   %{Browse {GetNote 6}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
