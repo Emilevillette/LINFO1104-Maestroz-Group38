@@ -354,7 +354,6 @@ local
       end
    end
 
-   declare
    fun {Clip Low High Music}
       fun {ClipAcc Low High Music Acc}
          case Music
@@ -372,7 +371,6 @@ local
       end
       in {ClipAcc Low High Music nil}
    end
-
 
    fun {Echo Delay Music}
       fun {EchoAcc Delay Music Acc}
@@ -421,6 +419,7 @@ in
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
    %{Browse {Repeat 5 [0.9 9.0 4.0]}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
+   %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList Music}}
