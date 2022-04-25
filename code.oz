@@ -354,12 +354,27 @@ local
       end
    end
 
+   declare
    fun {Clip Low High Music}
       fun {ClipAcc Low High Music Acc}
-         Acc
+         case Music
+         of nil then 
+            {Reverse Acc}
+         [] H|T then
+            if H < Low then
+               {ClipAcc Low High T Low|Acc}
+            elseif H > High then
+               {ClipAcc Low High T High|Acc}
+            else
+               {ClipAcc Low High T H|Acc}
+            end
+         end
       end
       in {ClipAcc Low High Music nil}
    end
+
+   {Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
+
 
    fun {Echo Delay Music}
       fun {EchoAcc Delay Music Acc}
