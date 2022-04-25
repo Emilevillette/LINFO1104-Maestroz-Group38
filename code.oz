@@ -226,18 +226,18 @@ local
          {Frequency {GetNoteHeight Music.1}} | {PartitionFreq Music.2}
    end
 
-
+   declare
    fun {Merge Musics}
       fun {MergeAcc Musics Acc}
-         Acc
-         %case Musics
-         %of H|T then
-          %  case H
+         case Musics of nil then Acc
+         [] H|T then {MergeAcc T {SumTwoLists {Multiply H} Acc}}
+         end
       end
       in {MergeAcc Musics nil} 
    end
+   {Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
 
-
+   declare
    fun {Intensity Music}
       case Music
       of X#L 
@@ -247,35 +247,44 @@ local
       end
    end
 
+   declare
    fun {Multiply Music}
       fun {MultiplyAcc Music X Acc}
-         if Music == nil then
-            nil
-         else
-            case Music.1
-            of nil then
-               Acc
-            [] H then
-               {Append Acc H*X} | {MultiplyAcc Music.2 X Acc}
-            end
+         case Music
+         of nil then {Reverse Acc}
+         [] H|T then
+            {MultiplyAcc T X H*X|Acc}
          end
       end
       in 
          {MultiplyAcc Music.2 {Intensity Music} nil}
    end
+   {Browse {Multiply 0.5#[5.0 6.0 8.0]}}
 
-   fun {AddElementLists L}
-      L
+   declare
+   fun {SumTwoLists L1 L2}
+      fun {SumTwoListsAcc L1 L2 Acc}
+         case L1 # L2
+            of nil # nil then {Reverse Acc}
+            [] (H1|T1) # nil then 
+               {SumTwoListsAcc T1 nil H1|Acc}
+            [] nil # (H2|T2) then
+               {SumTwoListsAcc nil T2 H2|Acc}
+            [] (H1|T1) # (H2|T2) then 
+               {SumTwoListsAcc T1 T2 H1+H2|Acc}
+         end
+      end
+   in
+      {SumTwoListsAcc L1 L2 nil}
    end
+   {Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
 
-   {Browse {Multiply 0.5#[5.0 6.0 5.0]}}
-
-
+   declare
    fun {Reverse Music}
       fun {ReverseAcc Music Acc}
          case Music
          of H|T then
-            {ReverseAcc T {Append H|nil Acc}}
+            {ReverseAcc T H|Acc}
          else
             Acc
          end
@@ -284,7 +293,7 @@ local
          {ReverseAcc Music nil}
    end
 
-
+   declare
    fun {Repeat Amount Music}
       fun {RepeatAcc Amount Music Music1 Acc}
          if Music == nil then
@@ -305,7 +314,19 @@ local
       in {RepeatAcc Amount Music Music nil}
    end
 
-   {Browse {Repeat 5 [0.9 9.0 4.0]}}
+   declare
+   fun {Repeat2 Amount Music}
+      fun {RepeatAcc Amount Music LoopMusic Acc}
+         if Amount == 0 then {Reverse Acc}
+         else
+            case LoopMusic of nil then {RepeatAcc Amount-1 Music Music Acc}
+            [] H|T then {RepeatAcc Amount Music T H|Acc} end
+         end
+      end
+      in {RepeatAcc Amount Music Music nil}
+   end
+
+   {Browse {Repeat2 5 [0.9 9.0 4.0]}}
 
    fun {Loop Duration Music}
       'bruhhhhh'
