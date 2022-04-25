@@ -373,8 +373,6 @@ local
       in {ClipAcc Low High Music nil}
    end
 
-   {Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
-
 
    fun {Echo Delay Music}
       fun {EchoAcc Delay Music Acc}
