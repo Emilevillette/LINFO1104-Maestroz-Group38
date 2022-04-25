@@ -191,7 +191,6 @@ local
    fun {Mix P2T Music}
       % TODO
       fun {MixAcc P2T Music Acc}
-         {Browse Music}
         %{Project.readFile CWD#'wave/animals/cow.wav'}
          %truc du genre pour convertir en 44100 Hz 0.5*(Float, sin (3.141592658979323846*2.0*{IntToFloat I-1}*F))
          case Music
@@ -200,7 +199,7 @@ local
             of samples(X) then
                {MixAcc P2T T X|Acc}
             [] partition(X) then 
-               {MixAcc P2T T {PartitionFreq {PartitionToTimedList X}}|Acc}
+               {MixAcc P2T T {PartitionFreq {P2T X}}|Acc}
             [] wave(X) then 
                {MixAcc P2T T {Project.load (CWD#X)}|Acc}
             [] merge(X) then 
@@ -213,17 +212,31 @@ local
       end
       in {MixAcc P2T Music nil}
    end
-      
+
    fun {Frequency Hauteur}
-      Hauteur
+      {Pow 2.0 ({IntToFloat Hauteur}/12.0)} * 440.0
    end
 
+   fun{GetNoteHeight ExtendedNote}
+      if(ExtendedNote.sharp == false) then
+         (NoteListNumber.(ExtendedNote.name) - NoteListNumber.a) + (12*ExtendedNote.octave - 48) 
+      else
+         ((NoteListNumber.(ExtendedNote.name) + 1) - NoteListNumber.a) + (12*ExtendedNote.octave - 48) 
+      end
+   end
 
    fun {PartitionFreq Music}
       if(Music == nil) then
          nil
       else
-         {Frequency {GetNoteHeight Music.1}} | {PartitionFreq Music.2}
+         case Music.1
+         of nil then nil
+         [] silence(duration:_) then 0 | {PartitionFreq Music.2}
+         [] _|_ then {PartitionFreq Music.1} | {PartitionFreq Music.2}
+         else
+            {Frequency {GetNoteHeight Music.1}} | {PartitionFreq Music.2}
+         end
+      end
    end
 
 
@@ -358,6 +371,7 @@ in
    {ForAll [NoteToExtended Music] Wait}
    %{Browse Music}
    %{Browse {PartitionToTimedList Music}}
+   {Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
    {Browse {Mix PartitionToTimedList Music}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
