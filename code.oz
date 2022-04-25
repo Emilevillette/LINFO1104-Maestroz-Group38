@@ -191,7 +191,8 @@ local
    fun {Mix P2T Music}
       % TODO
       fun {MixAcc P2T Music Acc}
-        {Project.readFile CWD#'wave/animals/cow.wav'}
+         {Browse Music}
+        %{Project.readFile CWD#'wave/animals/cow.wav'}
          %truc du genre pour convertir en 44100 Hz 0.5*(Float, sin (3.141592658979323846*2.0*{IntToFloat I-1}*F))
          case Music
          of H|T then
@@ -199,9 +200,9 @@ local
             of samples(X) then
                {MixAcc P2T T X|Acc}
             [] partition(X) then 
-               {MixAcc P2T T {PartitionFreq P2T X}|Acc}
+               {MixAcc P2T T {PartitionFreq {PartitionToTimedList X}}|Acc}
             [] wave(X) then 
-               {MixAcc P2T T {Project.load CWD#X}|Acc}
+               {MixAcc P2T T {Project.load (CWD#X)}|Acc}
             [] merge(X) then 
                {MixAcc P2T T {Merge X}|Acc}
             %filtres
@@ -213,27 +214,16 @@ local
       in {MixAcc P2T Music nil}
    end
       
-   fun {Frequence Hauteur}
+   fun {Frequency Hauteur}
       Hauteur
    end
 
 
-   fun {PartitionFreq P2T Musics}
-      'tamere'
-      %fun {PartitionFreqAcc P2T Musics Acc}
-         %case P2T
-         %of H|T then
-            %case H
-            %of H|T then
-
-           % [] nil then skip
-          %  else
-               
-         %   end
-        % [] nil then Acc
-       %  end
-      %end
-      %in {PartitionFreqAcc P2T nil} 
+   fun {PartitionFreq Music}
+      if(Music == nil) then
+         nil
+      else
+         {Frequency {GetNoteHeight Music.1}} | {PartitionFreq Music.2}
    end
 
 
@@ -360,15 +350,15 @@ in
    {Property.put print print(width:1000)}
    {Property.put print print(depth:1000)}
    Start = {Time}
-   {Browse {NoteToExtended a#3 1.0}}
    % Uncomment next line to run your tests.
    % {Test Mix PartitionToTimedList}
 
    % Add variables to this list to avoid "local variable used only once"
    % warnings.
    {ForAll [NoteToExtended Music] Wait}
-   {Browse Music}
-   {Browse {PartitionToTimedList Music}}
+   %{Browse Music}
+   %{Browse {PartitionToTimedList Music}}
+   {Browse {Mix PartitionToTimedList Music}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
