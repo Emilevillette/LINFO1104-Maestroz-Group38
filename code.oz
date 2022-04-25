@@ -313,30 +313,8 @@ local
       in 
          {ReverseAcc Music nil}
    end
-
    
    fun {Repeat Amount Music}
-      fun {RepeatAcc Amount Music Music1 Acc}
-         if Music == nil then
-            {RepeatAcc Amount-1 Music1 Music1 Acc}
-         else
-            if Amount == 0 then
-               Acc
-            else
-               case Music.1
-               of H then
-                  {Append Acc H} | {RepeatAcc Amount Music.2 Music1 Acc}
-               else
-                  nil
-               end
-            end
-         end
-      end
-      in {RepeatAcc Amount Music Music nil}
-   end
-
-   
-   fun {Repeat2 Amount Music}
       fun {RepeatAcc Amount Music LoopMusic Acc}
          if Amount == 0 then {Reverse Acc}
          else
@@ -347,7 +325,7 @@ local
       in {RepeatAcc Amount Music Music nil}
    end
 
-   {Browse {Repeat2 5 [0.9 9.0 4.0]}}
+   {Browse {Repeat 5 [0.9 9.0 4.0]}}
 
    fun {Loop Duration Music}
       'bruhhhhh'
