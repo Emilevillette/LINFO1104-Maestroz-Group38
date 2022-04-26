@@ -394,6 +394,7 @@ local
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    Music = {Project.load CWD#'joy.dj.oz'}
+   Music2 = {Project.load CWD#'creation.dj.oz'}
    Start
 
    % Uncomment next line to insert your tests.
@@ -425,7 +426,10 @@ in
    %{Browse {Mix PartitionToTimedList Music}}
    %{Browse {PartitionFreqChord [c d e] 1.0/3.0 PartitionToTimedList}}
    %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outtest.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
+   %{Browse {PartitionToTimedList Music2}}
+   {Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
+   {Browse "OK"}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
