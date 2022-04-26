@@ -149,7 +149,9 @@ local
       fun {StretchPartition PartitionStretch Factor}
 
          if(PartitionStretch == nil) then
-            nil
+            nilpthread_mutex_init(&mutex, NULL);
+            sem_init(&empty, 0, N); // buffer vide
+            sem_init(&full, 0, 0); // buffer vide
          else
             case PartitionStretch.1
             of nil then nil
@@ -373,10 +375,13 @@ local
    end
 
    fun {Echo Delay Music}
-      fun {EchoAcc Delay Music Acc}
-         Acc
+      local Silence in
+         fun {EchoAux Delay Music P2T}
+            Silence = {Mix2 P2T [partition([silence(duration:Delay)])]}
+            Merge{[[Silence Music] Music]}
+         end
       end
-      in {EchoAcc Delay Music nil}  
+      in {EchoAux Delay Music P2T} 
    end
 
    fun {Fade Start Out Music}
