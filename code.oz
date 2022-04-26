@@ -200,6 +200,8 @@ local
          [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
          [] wave(X) then {Append {Project.load (CWD#X)} {Mix P2T Music.2}}
          [] merge(X) then {Append {Merge X} {Mix P2T Music.2}}
+         [] reverse(X) then {Append {Reverse X} {Mix P2T Music.2}}
+         [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
          [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {List.length Y}/44100.0} {Mix P2T Music.2}}
          else
             nil
