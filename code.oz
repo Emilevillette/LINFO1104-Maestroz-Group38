@@ -70,6 +70,7 @@ local
                   octave:(ExtendedNote.octave + (({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) div 12)) 
                   sharp:(NoteList.(({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) mod 12).sharp))
          end
+         
       else
          if(ExtendedNote.sharp==false) then
             note(duration:ExtendedNote.duration 
