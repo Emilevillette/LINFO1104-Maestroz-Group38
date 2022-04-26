@@ -150,9 +150,7 @@ local
       fun {StretchPartition PartitionStretch Factor}
 
          if(PartitionStretch == nil) then
-            nilpthread_mutex_init(&mutex, NULL);
-            sem_init(&empty, 0, N); // buffer vide
-            sem_init(&full, 0, 0); // buffer vide
+            nil
          else
             case PartitionStretch.1
             of nil then nil
