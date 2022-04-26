@@ -70,7 +70,7 @@ local
                   octave:(ExtendedNote.octave + (({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) div 12)) 
                   sharp:(NoteList.(({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) mod 12).sharp))
          end
-         
+
       else
          if(ExtendedNote.sharp==false) then
             note(duration:ExtendedNote.duration 
@@ -197,7 +197,7 @@ local
          of nil then nil
          [] samples(X) then {Append X {Mix P2T Music.2}}
          [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
-         [] wave(X) then {Append {Project.load (CWD#X)} {Mix P2T Music.2}}
+         [] wave(X) then {Append {Project.load CWD#X} {Mix P2T Music.2}}
          [] merge(X) then {Append {Merge {MergeAux X P2T}} {Mix P2T Music.2}}
          [] reverse(X) then {Append {Reverse {Mix P2T X}} {Mix P2T Music.2}}
          [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
@@ -448,8 +448,10 @@ in
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
+   %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
+   %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/duck_quack.wav')] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
-   {Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
