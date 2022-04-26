@@ -256,19 +256,6 @@ local
       end
    end
 
-   %fun{SampleFrequency Frequency NumberOfSamples Pos}
-   %   fun{SampleFrequencyAcc Frequency NumberOfSamples Pos Acc}
-   %      if(Pos >= NumberOfSamples) then
-   %         Acc
-   %      else
-            %0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0}
-   %         {SampleFrequencyAcc Frequency NumberOfSamples Pos+1.0 0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0}|Acc}
-   %      end
-   %   end
-   %in
-   %   {SampleFrequencyAcc Frequency NumberOfSamples Pos nil}
-   %end
-
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun {Merge Musics}
