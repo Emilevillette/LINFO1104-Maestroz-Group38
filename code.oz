@@ -190,7 +190,6 @@ local
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun{Mix P2T Music}
-      {Browse Music}
       if(Music==nil) then
          nil
       else
@@ -200,6 +199,8 @@ local
          [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
          [] wave(X) then {Append {Project.load (CWD#X)} {Mix P2T Music.2}}
          [] merge(X) then {Append {Merge X} {Mix P2T Music.2}}
+         [] reverse(X) then {Append {Reverse X} {Mix P2T Music.2}}
+         [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
          [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} {Mix P2T Music.2}}
          else
             nil
@@ -371,10 +372,10 @@ local
    end
 
    fun {Echo Delay Music}
-      fun {EchoAcc Delay Music Acc}
-         Acc
+      fun {EchoAux Delay Music P2T}
+         {Merge [[{Mix P2T [partition([silence(duration:Delay)])]} Music] Music]}
       end
-      in {EchoAcc Delay Music nil}  
+      in {EchoAux Delay Music nil}  
    end
 
    fun {Fade Start Out Music}
@@ -411,7 +412,7 @@ in
    %{Browse Music}
    %{Browse {PartitionToTimedList Music}}
    %{Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
-   {Browse {Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:15.0)]}}
+   %{Browse {Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:15.0)]}}
    %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
    %{Browse {Repeat 5 [0.9 9.0 4.0]}}
@@ -423,7 +424,7 @@ in
    %{Browse {PartitionToTimedList Music}}
    %{Browse {Mix PartitionToTimedList Music}}
    %{Browse {PartitionFreqChord [c d e] 1.0/3.0 PartitionToTimedList}}
-   {Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outtest.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outtest.wav'}}
    {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
