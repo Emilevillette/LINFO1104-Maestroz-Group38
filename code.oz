@@ -70,6 +70,7 @@ local
                   octave:(ExtendedNote.octave + (({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) div 12)) 
                   sharp:(NoteList.(({Abs (NoteListNumber.(ExtendedNote.name) + NumberTranspose + 1)}) mod 12).sharp))
          end
+         
       else
          if(ExtendedNote.sharp==false) then
             note(duration:ExtendedNote.duration 
@@ -370,11 +371,13 @@ local
       in {ClipAcc Low High Music nil}
    end
 
+   
    fun {Echo Delay Music}
-      fun {EchoAcc Delay Music Acc}
-         Acc
+      fun {EchoAux Delay Music P2T}
+         Merge{[[{Mix2 P2T [partition([silence(duration:Delay)])]} Music] Music]}
       end
-      in {EchoAcc Delay Music nil}  
+      in
+         {EchoAux Delay Music P2T} 
    end
 
    fun {Fade Start Out Music}
