@@ -198,11 +198,12 @@ local
          [] samples(X) then {Append X {Mix P2T Music.2}}
          [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
          [] wave(X) then {Append {Project.load (CWD#X)} {Mix P2T Music.2}}
-         [] merge(X) then {Append {Merge X} {Mix P2T Music.2}}
+         %à arranger [] merge(X) then {Append {Merge {Mix P2T {TakeMusic X}}} {Mix P2T Music.2}}
          [] reverse(X) then {Append {Reverse {Mix P2T X}} {Mix P2T Music.2}}
          [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
          [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} {Mix P2T Music.2}}
          [] clip(low:X high:Y 1:Z) then {Append {Clip X Y {Mix P2T Z}} {Mix P2T Music.2}}
+         [] echo(delay:X decay:Y 1:Z) then {Append {Echo Y {Mix P2T Z} {Mix P2T [partition([silence(duration:X)])]}} {Mix P2T Music.2}}
          else
             nil
          end
@@ -266,13 +267,22 @@ local
       end
       in {MergeAcc Musics nil} 
    end
-   
+
+   fun {TakeMusic Music}
+      case Music
+      of X#L 
+         then L
+      else
+         nil
+      end
+   end
+
    fun {Intensity Music}
       case Music
       of X#L 
          then X
       else 
-         nil
+         1.0
       end
    end
 
@@ -359,8 +369,8 @@ local
       in {ClipAcc Low High Music nil}
    end
 
-   fun {Echo Delay Music P2T Mix}
-      {Merge [[{Mix P2T [partition([silence(duration:Delay)])]} Music] Music]}
+   fun {Echo Decay Music Mixer}
+      {Merge [Decay#Mixer|Music 1.0#Music]}
    end
 
    fun {Fade Start Out Music}
@@ -404,6 +414,9 @@ in
    %{Browse {Repeat 5 [0.9 9.0 4.0]}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
+   %{Browse {Mix PartitionToTimedList [partition([silence(duration:2.0)])]}}
+   %{Browse {Mix PartitionToTimedList [merge([0.3[partition([c d e f g])] 0.5#[partition([e f e c d])]] seconds:15.0)]}}
+   %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
