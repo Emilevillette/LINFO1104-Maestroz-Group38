@@ -203,7 +203,7 @@ local
          [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
          [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} {Mix P2T Music.2}}
          [] clip(low:X high:Y 1:Z) then {Append {Clip X Y {Mix P2T Z}} {Mix P2T Music.2}}
-         %[] echo(delay:X decay:Y 1:Z) then {Append {Echo Y {Mix P2T [partition([silence(duration:X)])]}} {Mix P2T Music.2}}
+         [] echo(delay:X decay:Y 1:Z) then {Append {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} {Mix P2T Z}} {Mix P2T Music.2}}
          else
             nil
          end
@@ -375,7 +375,7 @@ local
    end
 
    fun {Echo Decay Mixer Music}
-      {Merge [Decay#[Mixer Music] 1.0#Music]}
+      {Merge [Decay#{Append Mixer Music} 1.0#Music]}
    end
 
    fun {Fade Start Out Music}
@@ -423,7 +423,8 @@ in
    %{Browse {Mix PartitionToTimedList [partition([silence(duration:2.0)])]}}
    %{Browse {MergeAux [0.3#[partition([c d e f g])] 0.5#[partition([e f e c d])]] PartitionToTimedList}}
    %{Browse {Mix PartitionToTimedList [merge([0.3#[partition([c d e f g])] 0.5#[partition([e f e c d])]])]}}
-   %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
+   {Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
+   {Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
@@ -433,7 +434,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outtest.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
-   {Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
    {Browse "OK"}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
