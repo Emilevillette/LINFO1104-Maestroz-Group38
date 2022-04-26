@@ -204,6 +204,7 @@ local
          [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} {Mix P2T Music.2}}
          [] clip(low:X high:Y 1:Z) then {Append {Clip X Y {Mix P2T Z}} {Mix P2T Music.2}}
          [] echo(delay:X decay:Y 1:Z) then {Append {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} {Mix P2T Z}} {Mix P2T Music.2}}
+         [] cut(start:X finish:Y 1:Z) then {Append {Cut X Y {Mix P2T Z}} {Mix P2T Music.2}}
          else
             nil
          end
@@ -385,12 +386,33 @@ local
       in {FadeAcc Start Out Music nil}
    end
 
+   
    fun {Cut Start Finish Music}
-      fun {CutAcc Start Finish Music Acc}
-         Acc
-      end
-      in {CutAcc Start Finish Music nil} 
+      {AppendCut (Finish-Start)*44100.0 {GetListFrom Start*44100.0 Music}}
    end
+
+   fun {GetListFrom StartPos Lst}
+      if(Lst == nil) then
+         nil
+      else if(StartPos==1.0) then
+         Lst
+      else
+         {GetListFrom StartPos-1.0 Lst.2} end
+      end
+   end
+
+   fun {AppendCut NumberOfElems Music}
+      if(NumberOfElems==0.0) then 
+         nil
+      else
+         if(Music == nil) then 
+            0.0 | {AppendCut NumberOfElems-1.0 nil}
+         else
+            Music.1 | {AppendCut NumberOfElems-1.0 Music.2}
+         end
+      end
+   end
+
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    Music = {Project.load CWD#'joy.dj.oz'}
@@ -423,8 +445,11 @@ in
    %{Browse {Mix PartitionToTimedList [partition([silence(duration:2.0)])]}}
    %{Browse {MergeAux [0.3#[partition([c d e f g])] 0.5#[partition([e f e c d])]] PartitionToTimedList}}
    %{Browse {Mix PartitionToTimedList [merge([0.3#[partition([c d e f g])] 0.5#[partition([e f e c d])]])]}}
-   {Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
-   {Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
+   %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
+   %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
+   %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
+   {Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
