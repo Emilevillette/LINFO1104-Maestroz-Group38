@@ -5,8 +5,8 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -199,9 +199,10 @@ local
          [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
          [] wave(X) then {Append {Project.load (CWD#X)} {Mix P2T Music.2}}
          [] merge(X) then {Append {Merge X} {Mix P2T Music.2}}
-         [] reverse(X) then {Append {Reverse X} {Mix P2T Music.2}}
+         [] reverse(X) then {Append {Reverse {Mix P2T X}} {Mix P2T Music.2}}
          [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
          [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} {Mix P2T Music.2}}
+         [] clip(low:X high:Y 1:Z) then {Append {Clip X Y {Mix P2T Z}} {Mix P2T Music.2}}
          else
             nil
          end
@@ -254,19 +255,6 @@ local
           0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0}
       end
    end
-
-   %fun{SampleFrequency Frequency NumberOfSamples Pos}
-   %   fun{SampleFrequencyAcc Frequency NumberOfSamples Pos Acc}
-   %      if(Pos >= NumberOfSamples) then
-   %         Acc
-   %      else
-            %0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0}
-   %         {SampleFrequencyAcc Frequency NumberOfSamples Pos+1.0 0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0}|Acc}
-   %      end
-   %   end
-   %in
-   %   {SampleFrequencyAcc Frequency NumberOfSamples Pos nil}
-   %end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -371,11 +359,8 @@ local
       in {ClipAcc Low High Music nil}
    end
 
-   fun {Echo Delay Music}
-      fun {EchoAux Delay Music P2T}
-         {Merge [[{Mix P2T [partition([silence(duration:Delay)])]} Music] Music]}
-      end
-      in {EchoAux Delay Music nil}  
+   fun {Echo Delay Music P2T Mix}
+      {Merge [[{Mix P2T [partition([silence(duration:Delay)])]} Music] Music]}
    end
 
    fun {Fade Start Out Music}
