@@ -5,8 +5,8 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -177,7 +177,7 @@ local
             [] stretch(1:X factor:Y) then  {Append {StretchPartition {PartitionToTimedList X} Y}  {PartitionToTimedList Partition.2}}
             [] drone(1:X amount:Y) then {Append {DronePartition {PartitionToTimedList X} Y} {PartitionToTimedList Partition.2}}
             [] transpose(1:X semitones:Y) then {Append {TransposePartition {PartitionToTimedList X} Y} {PartitionToTimedList Partition.2}}
-            [] duration(1:X seconds:Y) then {Append {DurationPartition {IntToFloat Y} {PartitionToTimedList X}} {PartitionToTimedList Partition.2}}
+            [] duration(1:X seconds:Y) then {Append {DurationPartition Y {PartitionToTimedList X}} {PartitionToTimedList Partition.2}}
             [] silence(duration:X) then silence(duration:X) | {PartitionToTimedList Partition.2}
             [] note(duration:V instrument:W name:X octave:Y sharp:Z) then note(duration:V instrument:W name:X octave:Y sharp:Z) | {PartitionToTimedList Partition.2}
             [] _|_ then {PartitionToTimedList Partition.1} | {PartitionToTimedList Partition.2}
@@ -253,7 +253,7 @@ local
       if(Pos >= NumberOfSamples) then
          nil
       else
-          0.5*{Sin (3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0}
+          0.5*{Sin (2.0*3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0}
       end
    end
 
@@ -394,6 +394,7 @@ local
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    Music = {Project.load CWD#'joy.dj.oz'}
+   Music2 = {Project.load CWD#'creation.dj.oz'}
    Start
 
    % Uncomment next line to insert your tests.
@@ -416,6 +417,7 @@ in
    %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
    %{Browse {Repeat 5 [0.9 9.0 4.0]}}
+   %{Browse {Frequency 0}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
    %{Browse {Mix PartitionToTimedList [partition([silence(duration:2.0)])]}}
@@ -429,7 +431,10 @@ in
    %{Browse {Mix PartitionToTimedList Music}}
    %{Browse {PartitionFreqChord [c d e] 1.0/3.0 PartitionToTimedList}}
    %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outtest.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
+   %{Browse {PartitionToTimedList Music2}}
+   {Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
+   {Browse "OK"}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
