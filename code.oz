@@ -388,14 +388,13 @@ local
       in {ClipAcc Low High Music nil}
    end
 
+   
    fun {Echo Delay Music}
-      local Silence in
-         fun {EchoAux Delay Music P2T}
-            Silence = {Mix2 P2T [partition([silence(duration:Delay)])]}
-            Merge{[[Silence Music] Music]}
-         end
+      fun {EchoAux Delay Music P2T}
+         Merge{[[{Mix2 P2T [partition([silence(duration:Delay)])]} Music] Music]}
       end
-      in {EchoAux Delay Music P2T} 
+      in
+         {EchoAux Delay Music P2T} 
    end
 
    fun {Fade Start Out Music}
