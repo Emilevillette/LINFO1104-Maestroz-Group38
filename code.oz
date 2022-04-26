@@ -390,7 +390,7 @@ local
    
    fun {Echo Delay Music}
       fun {EchoAux Delay Music P2T}
-         Merge{[[{Mix2 P2T [partition([silence(duration:Delay)])]} Music] Music]}
+         Merge{[[{Mix P2T [partition([silence(duration:Delay)])]} Music] Music]}
       end
       in
          {EchoAux Delay Music P2T} 
