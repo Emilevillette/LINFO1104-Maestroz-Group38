@@ -189,45 +189,18 @@ local
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   fun {Mix P2T Music}
-      % TODO
-      fun {MixAcc P2T Music Acc}
-        %{Project.readFile CWD#'wave/animals/cow.wav'}
-         %truc du genre pour convertir en 44100 Hz 0.5*(Float, sin (3.141592658979323846*2.0*{IntToFloat I-1}*F))
-         case Music
-         of H|T then
-            case H
-            of samples(X) then
-               {MixAcc P2T T X|Acc}
-            [] partition(X) then 
-               {MixAcc P2T T {PartitionFreq {P2T X}}|Acc}
-            [] wave(X) then 
-               {MixAcc P2T T {Project.load (CWD#X)}|Acc}
-            [] merge(X) then 
-               {MixAcc P2T T {Merge X}|Acc}
-            %filtres
-            %[] loop(seconds:X 1:Y) then {MixAcc P2T T {Loop X {Mix P2T Y} {MusicLength {Mix P2T Y} 0.0}}|Acc}
-            end
-         else
-            Acc | nil
-         end
-      end
-      in
-         {Flatten {MixAcc P2T Music nil}}
-   end
-
-   fun{Mix2 P2T Music}
+   fun{Mix P2T Music}
       {Browse Music}
       if(Music==nil) then
          nil
       else
          case Music.1
          of nil then nil
-         [] samples(X) then {Append X {Mix2 P2T Music.2}}
-         [] partition(X) then {Append {PartitionFreq {P2T X}} {Mix2 P2T Music.2}}
-         [] wave(X) then {Append {Project.load (CWD#X)} {Mix2 P2T Music.2}}
-         [] merge(X) then {Append {Merge X} {Mix2 P2T Music.2}}
-         [] loop(seconds:X 1:Y) then {Append {Loop X {Mix2 P2T Y} {List.length Y}/44100.0} {Mix2 P2T Music.2}}
+         [] samples(X) then {Append X {Mix P2T Music.2}}
+         [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
+         [] wave(X) then {Append {Project.load (CWD#X)} {Mix P2T Music.2}}
+         [] merge(X) then {Append {Merge X} {Mix P2T Music.2}}
+         [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {List.length Y}/44100.0} {Mix P2T Music.2}}
          else
             nil
          end
@@ -248,16 +221,28 @@ local
       end
    end
 
-   fun {PartitionFreq Music}
+   fun {PartitionFreq Music P2T}
       if(Music == nil) then
          nil
       else
          case Music.1
          of nil then nil
-         [] silence(duration:_) then {Append {SampleFrequency 0.0 Music.1.duration*44100.0 0.0} {PartitionFreq Music.2}}
-         [] _|_ then {PartitionFreq Music.1} | {PartitionFreq Music.2}
+         [] silence(duration:_) then {Append {SampleFrequency 0.0 Music.1.duration*44100.0 0.0} {PartitionFreq Music.2 P2T}}
+         [] _|_ then {Append {Merge {PartitionFreqChord Music.1 1.0/{IntToFloat {List.length Music.1}} P2T}} {PartitionFreq Music.2 P2T}}
          else
-            {Append {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0} {PartitionFreq Music.2}}
+            {Append {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0} {PartitionFreq Music.2 P2T}}
+         end
+      end
+   end
+
+   fun{PartitionFreqChord Chord Intensity P2T}
+      {Browse Chord}
+      if(Chord == nil) then
+         nil
+      else
+         case Chord.1
+         of nil then nil
+         else Intensity#{PartitionFreq {P2T [Chord.1]} P2T} | {PartitionFreqChord Chord.2 Intensity P2T}
          end
       end
    end
@@ -359,7 +344,6 @@ local
 
    
    fun {Loop Duration Music MusicLength}
-      {Browse "IM HERERERERERERERERERERE"}
       if(Duration>0.0 andthen Duration<MusicLength) then
          {List.take Music Duration*44100.0}
       else if(Duration>=MusicLength) then
@@ -440,14 +424,15 @@ in
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
    %{Browse {PartitionToTimedList Music}}
-   %{Browse {Mix2 PartitionToTimedList Music}}
-   {Browse {Project.run Mix2 PartitionToTimedList Music 'out.wav'}}
+   %{Browse {Mix PartitionToTimedList Music}}
+   %{Browse {PartitionFreqChord [c d e] 1.0/3.0 PartitionToTimedList}}
+   {Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
-   %{Browse {Mix2 PartitionToTimedList [partition([a b c#4])]}}
-   %{Browse {Project.run Mix2 PartitionToTimedList [partition([b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [b]) stretch(factor:0.5 [a]) stretch(factor:2.0 [a]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g])]) ] 'out.wav'}}
+   %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
+   %{Browse {Project.run Mix PartitionToTimedList [partition([b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [b]) stretch(factor:0.5 [a]) stretch(factor:2.0 [a]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g])]) ] 'out.wav'}}
    %{Browse {List.length Music.1.1}}
-   %{Browse {Project.run Mix2 PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence])])] 'out.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence])])] 'out.wav'}}
    
    % Shows the total time to run your code.
    {Browse {IntToFloat {Time}-Start} / 1000.0}
