@@ -381,7 +381,7 @@ local
    end
 
    fun {Fade Start Out Music}
-      {Append {FadeIn 1.0/(Start*44100.0) 0.0 {Cut 0.0 ({IntToFloat {List.length Music}}/44100.0)-Out Music}} 
+      {Append {FadeIn 1.0/(Start*44100.0) 0.0 {List.take Music {List.length Music}-({FloatToInt Out}*44100)}} 
                {FadeOut 1.0/(Out*44100.0) 1.0 {GetListFrom {IntToFloat {List.length Music}}-(Out*44100.0) Music}}}
    end
 
@@ -404,6 +404,8 @@ local
    fun {Cut Start Finish Music}
       {Browse "MUSIK"}
       {Browse Music}
+      {Browse Start}
+      {Browse Finish}
       {AppendCut (Finish-Start)*44100.0 {GetListFrom Start*44100.0 Music} Start==0.0}
    end
 
@@ -464,7 +466,7 @@ in
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:1.0 out:2.0)] 'outfade.wav'}}
+   {Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:3.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/cat.wav')] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
