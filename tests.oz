@@ -38,7 +38,7 @@ end
 % TEST PartitionToTimedNotes
 
 proc {TestNotes P2T}
-   skip
+   Notes = {}
 end
 
 proc {TestChords P2T}
