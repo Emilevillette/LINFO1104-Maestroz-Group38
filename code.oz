@@ -5,8 +5,8 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -433,6 +433,7 @@ local
 
    Music = {Project.load CWD#'joy.dj.oz'}
    Music2 = {Project.load CWD#'creation.dj.oz'}
+   %Music3 = {Project.load CWD#'example.dj.oz'}
    Start
 
    % Uncomment next line to insert your tests.
@@ -464,7 +465,7 @@ in
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:1.0 out:2.0)] 'outfade.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:1.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/cat.wav')] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
