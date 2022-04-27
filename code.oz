@@ -121,7 +121,7 @@ local
          Acc
       else
          case Partition.1
-         of nil then [nil]
+         of nil then Acc
          [] partition(X) then {ComputeDuration {PartitionToTimedList X} 0.0}
          [] silence(duration:X) then {ComputeDuration Partition.2 Acc+X}
          [] note(duration:V instrument:_ name:_ octave:_ sharp:_)  then {ComputeDuration Partition.2 (Acc+V)}
