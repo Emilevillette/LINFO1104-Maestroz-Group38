@@ -197,7 +197,7 @@ local
          of nil then nil
          [] samples(X) then {Append X {Mix P2T Music.2}}
          [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
-         [] wave(X) then {Append {Project.load CWD#X} {Mix P2T Music.2}}
+         [] wave(X) then {Append {Project.readFile CWD#X} {Mix P2T Music.2}}
          [] merge(X) then {Append {Merge {MergeAux X P2T}} {Mix P2T Music.2}}
          [] reverse(X) then {Append {Reverse {Mix P2T X}} {Mix P2T Music.2}}
          [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
@@ -205,6 +205,7 @@ local
          [] clip(low:X high:Y 1:Z) then {Append {Clip X Y {Mix P2T Z}} {Mix P2T Music.2}}
          [] echo(delay:X decay:Y 1:Z) then {Append {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} {Mix P2T Z}} {Mix P2T Music.2}}
          [] cut(start:X finish:Y 1:Z) then {Append {Cut X Y {Mix P2T Z}} {Mix P2T Music.2}}
+         [] fade(start:X out:Y Z) then {Append {Fade X Y {Mix P2T Z}} {Mix P2T Music.2}}
          else
             nil
          end
@@ -380,15 +381,30 @@ local
    end
 
    fun {Fade Start Out Music}
-      fun {FadeAcc Start Out Music Acc}
-         Acc
-      end
-      in {FadeAcc Start Out Music nil}
+      {Append {FadeIn 1.0/(Start*44100.0) 0.0 {Cut 0.0 ({IntToFloat {List.length Music}}/44100.0)-Out Music}} 
+               {FadeOut 1.0/(Out*44100.0) 1.0 {GetListFrom {IntToFloat {List.length Music}}-(Out*44100.0) Music}}}
    end
 
+   fun {FadeIn Increment CurrentIncrement Music}
+      if(CurrentIncrement>=1.0) then
+         Music
+      else
+         Music.1*CurrentIncrement | {FadeIn Increment CurrentIncrement+Increment Music.2}
+      end
+   end
+
+   fun{FadeOut Increment CurrentIncrement Music}
+      if(Music == nil) then
+         nil
+      else
+         Music.1*CurrentIncrement | {FadeOut Increment CurrentIncrement-Increment Music.2}
+      end
+   end
    
    fun {Cut Start Finish Music}
-      {AppendCut (Finish-Start)*44100.0 {GetListFrom Start*44100.0 Music}}
+      {Browse "MUSIK"}
+      {Browse Music}
+      {AppendCut (Finish-Start)*44100.0 {GetListFrom Start*44100.0 Music} Start==0.0}
    end
 
    fun {GetListFrom StartPos Lst}
@@ -401,14 +417,14 @@ local
       end
    end
 
-   fun {AppendCut NumberOfElems Music}
-      if(NumberOfElems==0.0) then 
+   fun {AppendCut NumberOfElems Music StartAtZero}
+      if(NumberOfElems==0.0 andthen StartAtZero==false) then 
          nil
       else
          if(Music == nil) then 
-            0.0 | {AppendCut NumberOfElems-1.0 nil}
+            0.0 | {AppendCut NumberOfElems-1.0 nil false}
          else
-            Music.1 | {AppendCut NumberOfElems-1.0 Music.2}
+            Music.1 | {AppendCut NumberOfElems-1.0 Music.2 false}
          end
       end
    end
@@ -448,8 +464,9 @@ in
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
+   {Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:1.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
-   %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/duck_quack.wav')] 'outduck.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/cat.wav')] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
    %{Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
