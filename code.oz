@@ -126,7 +126,13 @@ local
          [] silence(duration:X) then {ComputeDuration Partition.2 Acc+X}
          [] note(duration:V instrument:_ name:_ octave:_ sharp:_)  then {ComputeDuration Partition.2 (Acc+V)}
          [] _#_ then {ComputeDuration Partition.2 (Acc+1.0)}
-         [] _|_ then {ComputeDuration Partition.2 (Acc+{GetNoteLength Partition.1.1})}
+         [] H|_ then 
+            case H
+            of nil then 
+               {ComputeDuration Partition.2 Acc}
+            else
+               {ComputeDuration Partition.2 (Acc+{GetNoteLength Partition.1.1})}
+            end
          else
             {ComputeDuration Partition.2 (Acc+1.0)}
          end
@@ -182,7 +188,12 @@ local
             [] duration(1:X seconds:Y) then {Append {DurationPartition Y {PartitionToTimedList X}} {PartitionToTimedList Partition.2}}
             [] silence(duration:X) then silence(duration:X) | {PartitionToTimedList Partition.2}
             [] note(duration:V instrument:W name:X octave:Y sharp:Z) then note(duration:V instrument:W name:X octave:Y sharp:Z) | {PartitionToTimedList Partition.2}
-            [] _|_ then {PartitionToTimedList Partition.1} | {PartitionToTimedList Partition.2}
+            [] H|T then 
+                case H
+                of nil then [nil] | {PartitionToTimedList Partition.2}
+                else
+                    {PartitionToTimedList Partition.1} | {PartitionToTimedList Partition.2}
+                end
             else  
                {NoteToExtended Partition.1 1.0} | {PartitionToTimedList Partition.2}
          end
@@ -229,17 +240,24 @@ local
    end
 
    fun {PartitionFreq Music P2T}
-      if(Music == nil) then
-         nil
-      else
-         case Music.1
-         of nil then nil
-         [] silence(duration:_) then {Append {SampleFrequency 0.0 Music.1.duration*44100.0 0.0} {PartitionFreq Music.2 P2T}}
-         [] _|_ then {Append {Merge {PartitionFreqChord Music.1 1.0/{IntToFloat {List.length Music.1}} P2T}} {PartitionFreq Music.2 P2T}}
+      fun {PartitionFreqAcc Music P2T Acc}   
+         if(Music == nil) then
+            {List.reverse Acc}
          else
-            {Append {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0} {PartitionFreq Music.2 P2T}}
+            case Music.1
+            of nil then nil
+            [] silence(duration:_) then {PartitionFreqAcc Music.2 P2T {SampleFrequency 0.0 Music.1.duration*44100.0 0.0}|Acc}
+            [] _|_ then  {PartitionFreqAcc Music.2 P2T {Merge {PartitionFreqChord Music.1 1.0/{IntToFloat{List.length Music.1}} P2T}}|Acc}
+            else
+               {PartitionFreqAcc Music.2 P2T {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0}|Acc}
+            end
          end
       end
+   in {PartitionFreqAcc Music P2T nil}
+   end
+
+   fun {RemoveNil Lst}
+      nil
    end
 
    fun{PartitionFreqChord Chord Intensity P2T}
@@ -420,11 +438,13 @@ in
    % warnings.
    %{Browse Music}
    %{Browse {PartitionToTimedList Music}}
+   {Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[a0 a0 [nil]])])]}}
+   {Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[[nil]])])]}}
    %{Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
    %{Browse {Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:15.0)]}}
    %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
-   {Browse {Repeat2 5 [0.9 9.0 4.0]}}
+   %{Browse {Repeat2 5 [0.9 9.0 4.0]}}
    %{Browse {Frequency 0}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
@@ -453,12 +473,13 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outloop.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
-   %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
    {Browse "OK"}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
-   %{Browse {Project.run Mix PartitionToTimedList [partition([b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [b]) stretch(factor:0.5 [a]) stretch(factor:2.0 [a]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g]) b b c5 d5 d5 c5 b a g g a b stretch(factor:1.5 [a]) stretch(factor:0.5 [g]) stretch(factor:2.0 [g])]) ] 'out.wav'}}
+   %{Browse {Mix PartitionToTimedList [partition([[c d]])]}}
+   %{Browse {Project.run Mix PartitionToTimedList [partition([a silence transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence]) stretch(factor:3.0 [silence c c c [c c#5 c]]) duration(seconds:6.0 [silence b c5 d8 [d#3 e f]]) drone(amount:4 note:g#5) drone(amount:3 note:silence)]) ] 'out.wav'}}
    %{Browse {List.length Music.1.1}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence])])] 'out.wav'}}
    
