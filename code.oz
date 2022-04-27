@@ -5,7 +5,8 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = 'C:/Users/emile/OneDrive/2021-2022/Q2/Oz/LINFO1104-Maestroz-Group38/' % Emile's directory 
    %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
@@ -333,6 +334,7 @@ local
       in {RepeatAcc Amount Music nil}
    end
    
+   
    fun {Loop Duration Music MusicLength}
          {Append {Repeat {FloatToInt {Floor Duration/MusicLength}} Music} {List.take Music ({FloatToInt Duration - MusicLength*{Floor Duration/MusicLength}})*44100}}
    end
@@ -384,16 +386,6 @@ local
       {AppendCut (Finish-Start)*44100.0 {List.drop Music {FloatToInt Start*44100.0} } Start==0.0}
    end
 
-   fun {GetListFrom StartPos Lst}
-      if(Lst == nil) then
-         nil
-      else if(StartPos==1.0) then
-         Lst
-      else
-         {GetListFrom StartPos-1.0 Lst.2} end
-      end
-   end
-
    fun {AppendCut NumberOfElems Music StartAtZero}
       if(NumberOfElems==0.0 andthen StartAtZero==false) then 
          nil
@@ -417,8 +409,8 @@ local
    % \insert '/full/absolute/path/to/your/tests.oz'
    % !!! Remove this before submitting.
 in
-   {Property.put print print(width:1000)}
-   {Property.put print print(depth:1000)}
+   %{Property.put print print(width:1000)}
+   %{Property.put print print(depth:1000)}
    Start = {Time}
    % Uncomment next line to run your tests.
    % {Test Mix PartitionToTimedList}
@@ -431,7 +423,7 @@ in
    %{Browse {Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:15.0)]}}
    %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
-   {Browse {Repeat 5 [0.9 9.0 4.0]}}
+   %{Browse {Repeat 5 [0.9 9.0 4.0]}}
    %{Browse {Frequency 0}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
@@ -441,7 +433,8 @@ in
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [reverse(1:[partition([c d e f g])])] 'outrev.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
+   %{Browse {List.take 1|2|3|4|5|nil 6}}
+   %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
    %{Browse {PartitionToTimedList [drone(amount:3 note:a#4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:3.0 out:2.0)] 'outfade.wav'}}
@@ -449,14 +442,14 @@ in
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/cat.wav')] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
-   {Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
-   {Browse {PartitionToTimedList Music3}}
+   %{Browse {PartitionToTimedList Music3}}
    %{Browse {Mix PartitionToTimedList Music}}
    %{Browse {PartitionFreqChord [c d e] 1.0/3.0 PartitionToTimedList}}
-   {Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outloop.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outloop.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
    %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}

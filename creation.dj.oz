@@ -39,7 +39,7 @@ local
     ])]
 
     SeventhLine = [duration(seconds:3.0 [[d3 a3 d4 a4 f5] [d3 a3 d4 d5] [d3 a3 d4 f5] [d3 a3 d4 a5] [d3 a3 d4 e5] [d3 a3 d4 c#5] [d3 a3 d4 a5] [d3 a3 d4 c#6]
-                    stretch(factor:2.0 [d5]) stretch(factor:2.0 [[d2 d1]])
+                    stretch(factor:2.0 [d5]) stretch(factor:2.0 [[d3 d2 d1]])
     ])]
 
     Partition = {Flatten [FirstLine SecondLine ThirdLine FourthLine FifthLine SixthLine SeventhLine]}
