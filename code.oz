@@ -341,16 +341,15 @@ local
    in
       {SumTwoListsAcc L1 L2 nil}
    end
-   
+
    fun {Repeat Amount Music}
-      fun {RepeatAcc Amount Music LoopMusic Acc}
-         if Amount == 0 then {List.reverse Acc}
+      fun {RepeatAcc Amount Music Acc}
+         if Amount == 0 then {Flatten {List.reverse Acc}}
          else
-            case LoopMusic of nil then {RepeatAcc Amount-1 Music Music Acc}
-            [] H|T then {RepeatAcc Amount Music T H|Acc} end
+            {RepeatAcc Amount-1 Music Music|Acc}
          end
       end
-      in {RepeatAcc Amount Music Music nil}
+      in {RepeatAcc Amount Music nil}
    end
    
    
@@ -444,7 +443,7 @@ in
    %{Browse {Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:15.0)]}}
    %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
-   %{Browse {Repeat2 5 [0.9 9.0 4.0]}}
+   %{Browse {Repeat 5 [0.9 9.0 4.0]}}
    %{Browse {Frequency 0}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
