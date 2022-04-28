@@ -160,7 +160,8 @@ local
             nil
          else
             case PartitionStretch.1
-            of nil then nil
+            of [nil] then [nil]
+            [] nil then [nil]
             [] partition(X) then {StretchPartition {PartitionToTimedList X} Factor}
             [] silence(duration:X) then silence(duration:X*Factor) | {StretchPartition PartitionStretch.2 Factor}
             [] note(duration:V instrument:W name:X octave:Y sharp:Z) then note(duration:V*Factor instrument:W name:X octave:Y sharp:Z) | {StretchPartition PartitionStretch.2 Factor}
@@ -255,10 +256,6 @@ local
             {Append {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0} {PartitionFreq Music.2 P2T}}
          end
       end
-   end
-
-   fun {RemoveNil Lst}
-      nil
    end
 
    fun{PartitionFreqChord Chord Intensity P2T}
@@ -444,8 +441,8 @@ in
    % warnings.
    %{Browse Music}
    %{Browse {PartitionToTimedList Music}}
-   %{Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[a0 a0 [nil]])])]}}
-   %{Browse {Mix PartitionToTimedList [partition([duration(seconds:2.0 1:[a0 a0 [nil]])])]}}
+   {Browse {PartitionToTimedList [partition([duration(seconds:4.0 1:[a0 b1 [nil]])])]}}
+   {Browse {Mix PartitionToTimedList [partition([duration(seconds:4.0 1:[a0 b1 [nil]])])]}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([duration(seconds:2.0 1:[a4 a3 [nil]])])] 'outnil.wav'}}
    %{Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[[nil]])])]}}
    %{Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
@@ -461,15 +458,13 @@ in
    %{Browse {Mix PartitionToTimedList [merge([0.3#[duration(seconds:0.1 1:[partition([c])])] 0.4#[duration(seconds:0.1 1:[partition([e])])]])]}}
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
-   %{Browse {Project.run Mix PartitionToTimedList [reverse(1:[partition([c d e f g])])] 'outrev.wav'}}
-   %{Browse {List.take 1|2|3|4|5|nil 6}}
    %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
    %{Browse {PartitionToTimedList [drone(amount:3 note:a#4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4 [nil]])] start:3.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:1.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
-   %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/cat.wav')] 'outduck.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [loop(seconds:10.0 1:[wave('wave/animals/duck_quack.wav')])] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
    %{Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
@@ -482,7 +477,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
    %{Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
    {Browse "OK"}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
