@@ -441,8 +441,8 @@ in
    % warnings.
    %{Browse Music}
    %{Browse {PartitionToTimedList Music}}
-   {Browse {PartitionToTimedList [partition([duration(seconds:4.0 1:[a0 b1 [nil]])])]}}
-   {Browse {Mix PartitionToTimedList [partition([duration(seconds:4.0 1:[a0 b1 [nil]])])]}}
+   %{Browse {PartitionToTimedList [partition([duration(seconds:4.0 1:[a0 b1 [nil]])])]}}
+   %{Browse {Mix PartitionToTimedList [partition([duration(seconds:4.0 1:[a0 b1 [nil]])])]}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([duration(seconds:2.0 1:[a4 a3 [nil]])])] 'outnil.wav'}}
    %{Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[[nil]])])]}}
    %{Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
@@ -462,7 +462,8 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
    %{Browse {PartitionToTimedList [drone(amount:3 note:a#4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4 [nil]])] start:3.0 out:2.0)] 'outfade.wav'}}
-   %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:1.0 out:2.0)] 'outfade.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([duration(seconds: 0.002 1:[a4 a4])])] start:0.001 out:0.001)] 'outfade.wav'}}
+   {Browse {Mix PartitionToTimedList [fade(1:[partition([duration(seconds: 0.0002 1:[a4])])] start:0.0001 out:0.0001)]}}
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [loop(seconds:10.0 1:[wave('wave/animals/duck_quack.wav')])] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
