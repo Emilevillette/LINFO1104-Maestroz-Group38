@@ -5,9 +5,9 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
    %CWD = 'C:/Users/emile/OneDrive/2021-2022/Q2/Oz/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -211,7 +211,9 @@ local
          [] samples(X) then X | {Mix P2T Music.2}
          [] partition(X) then {PartitionFreq {P2T X} P2T} | {Mix P2T Music.2}
          [] wave(X) then {Project.readFile CWD#X} | {Mix P2T Music.2}
-         [] merge(X) then {Merge {MergeAux X P2T}} | {Mix P2T Music.2}
+         [] merge(X) then 
+            {Browse {List.reverse {MergeAux2 X P2T}}}
+            {Merge {List.reverse {MergeAux2 X P2T}}} | {Mix P2T Music.2}
          [] reverse(X) then {List.reverse {Mix P2T X}} | {Mix P2T Music.2}
          [] repeat(amount:X 1:Y) then {Repeat X {Mix P2T Y}} | {Mix P2T Music.2}
          [] loop(seconds:X 1:Y) then {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} | {Mix P2T Music.2}
@@ -282,30 +284,37 @@ local
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   fun {MergeAux Musics P2T}
+   %fun {MergeAux Musics P2T}
+    %  case Musics
+     % of nil then nil
+      %[] H|T then
+       %  {Mix P2T H.2} | {MergeAux T P2T}
+      %end
+   %end
+
+   fun {MergeAux2 Musics P2T}
+      %{Browse Musics}
       case Musics
-      of nil then nil
+      of nil then nil 
       [] H|T then
-         {Mix P2T H.2} | {MergeAux T P2T}
+         case Musics.1
+         of I#M then
+          {Multiply I#{Mix P2T M}} | {MergeAux2 T P2T}
+         else
+            nil 
+         end
       end
    end
 
    fun {Merge Musics}
       fun {MergeAcc Musics Acc}
          case Musics of nil then Acc
-         [] H|T then {MergeAcc T {SumTwoLists {Multiply H} Acc}}
+         [] H|T then {MergeAcc T {SumTwoLists H Acc}}
          end
       end
-      in {MergeAcc Musics nil} 
-   end
-
-   fun {TakeMusic Music}
-      case Music
-      of _#L 
-         then L
-      else
-         nil
-      end
+      in 
+         %{Browse Musics}
+         {MergeAcc Musics nil} 
    end
 
    fun {Multiply Music}
@@ -340,6 +349,9 @@ local
          end
       end
    in
+      %{Browse 'BEGINLIST'}
+      %{Browse L1}
+      %{Browse 'ENDLIST'}
       {SumTwoListsAcc L1 L2 nil}
    end
 
@@ -444,15 +456,19 @@ in
    %{Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[[nil]])])]}}
    %{Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
    %{Browse {Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:15.0)]}}
-   %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
+   %{Browse {Merge {MergeAux2 [0.5#[samples([0.9 0.4 ~1.2 8.5 5.2])] 0.6#[samples([0.9 0.4 ~1.2])] 0.8#[samples([0.9 0.4 ~1.2])]] PartitionToTimedList}}}
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
+   %{Browse {MergeAux2 [0.5#[samples([0.2 0.4 0.6])] 0.25#[samples([0.4 0.8 0.8])]] PartitionToTimedList}}
    %{Browse {Repeat 5 [0.9 9.0 4.0]}}
    %{Browse {Frequency 0}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
    %{Browse {Mix PartitionToTimedList [partition([silence(duration:2.0)])]}}
    %{Browse {MergeAux [0.3#[partition([c d e f g])] 0.5#[partition([e f e c d])]] PartitionToTimedList}}
-   %{Browse {Mix PartitionToTimedList [merge([0.3#[duration(seconds:0.1 1:[partition([c])])] 0.4#[duration(seconds:0.1 1:[partition([e])])]])]}}
+   %{Browse {Mix PartitionToTimedList [partition([duration(seconds:0.001 1:[partition([c])])])]}}
+   %{Browse {Mix PartitionToTimedList [partition([duration(seconds:0.001 1:[partition([e])])])]}}
+   {Browse {MergeAux2 [0.5#[partiton([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]] PartitionToTimedList}}
+   %{Browse {Mix PartitionToTimedList [merge([0.5#[partiton([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]])]}}
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [reverse(1:[partition([c d e f g])])] 'outrev.wav'}}
@@ -476,8 +492,8 @@ in
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
    %{Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
-   {Browse "OK"}
+   %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
+   {Browse 'OK'}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
