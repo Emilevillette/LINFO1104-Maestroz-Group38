@@ -437,8 +437,8 @@ in
    % warnings.
    %{Browse Music}
    %{Browse {PartitionToTimedList Music}}
-   {Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[a0 a0 [nil]])])]}}
-   {Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[[nil]])])]}}
+   {Browse {PartitionToTimedList [partition([duration(seconds:2.0 [a0 a0 [nil]])])]}}
+   %{Browse {PartitionToTimedList [partition([duration(seconds:2.0 1:[[nil]])])]}}
    %{Browse {GetNoteHeight note(duration:1.0 instrument:none name:a octave:5 sharp:false)}}
    %{Browse {Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:15.0)]}}
    %{Browse {Merge [0.5#[0.9 0.4 ~1.2 8.5 5.2] 0.6#[0.9 0.4 ~1.2] 0.8#[0.9 0.4 ~1.2]]}}
