@@ -462,7 +462,9 @@ in
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
    %{Browse {Mix PartitionToTimedList [partition([[c d]])]}}
-   {Browse {Project.run Mix PartitionToTimedList Music3 'outexample1.wav'}}
+   %{Browse Music3}
+   %{Browse {Project.run Mix PartitionToTimedList Music3 'example2.wav'}}
+   {Browse {Project.run Mix PartitionToTimedList Music3 'example1.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([a silence transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence]) stretch(factor:3.0 [silence c c c [c c#5 c]]) duration(seconds:6.0 [silence b c5 d8 [d#3 e f]]) drone(amount:4 note:g#5) drone(amount:3 note:silence)]) ] 'out.wav'}}
    %{Browse {List.length Music.1.1}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence])])] 'out.wav'}}

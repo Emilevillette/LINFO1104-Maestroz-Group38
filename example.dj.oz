@@ -14,7 +14,11 @@ local
     ForMerge = [0.3#[partition(PartiOne)] 0.5#[partition(PartiTwo)] 0.2#[samples([0.2 0.4 0.1 ~0.2 ~0.9 0.3])]]
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    ForRepeat = [duration(seconds:3.0 1:[g5 f#5 b5 e5 d5 g5 b4 e5 a4 d5])]
+
 
 in
-    [partition(Partition) wave(ForWave) merge(ForMerge)]
+    [partition(Partition) wave(ForWave) merge(ForMerge) repeat(amount:2 1:[partition(ForRepeat)]) loop(seconds:5.0 1:[wave('wave/animals/duck_quack.wav')]) ]
+    
 end 
