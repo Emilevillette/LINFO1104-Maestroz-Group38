@@ -5,9 +5,9 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
    %CWD = 'C:/Users/emile/OneDrive/2021-2022/Q2/Oz/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -202,27 +202,31 @@ local
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   fun{Mix P2T Music}
+   fun{MixAux P2T Music}
       if(Music==nil) then
          nil
       else
          case Music.1
          of nil then nil
-         [] samples(X) then {Append X {Mix P2T Music.2}}
-         [] partition(X) then {Append {PartitionFreq {P2T X} P2T} {Mix P2T Music.2}}
-         [] wave(X) then {Append {Project.readFile CWD#X} {Mix P2T Music.2}}
-         [] merge(X) then {Append {Merge {MergeAux X P2T}} {Mix P2T Music.2}}
-         [] reverse(X) then {Append {List.reverse {Mix P2T X}} {Mix P2T Music.2}}
-         [] repeat(amount:X 1:Y) then {Append {Repeat X {Mix P2T Y}} {Mix P2T Music.2}}
-         [] loop(seconds:X 1:Y) then {Append {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} {Mix P2T Music.2}}
-         [] clip(low:X high:Y 1:Z) then {Append {Clip X Y {Mix P2T Z}} {Mix P2T Music.2}}
-         [] echo(delay:X decay:Y 1:Z) then {Append {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} {Mix P2T Z}} {Mix P2T Music.2}}
-         [] cut(start:X finish:Y 1:Z) then {Append {Cut X Y {Mix P2T Z}} {Mix P2T Music.2}}
-         [] fade(start:X out:Y Z) then {Append {Fade X Y {Mix P2T Z}} {Mix P2T Music.2}}
+         [] samples(X) then X | {Mix P2T Music.2}
+         [] partition(X) then {PartitionFreq {P2T X} P2T} | {Mix P2T Music.2}
+         [] wave(X) then {Project.readFile CWD#X} | {Mix P2T Music.2}
+         [] merge(X) then {Merge {MergeAux X P2T}} | {Mix P2T Music.2}
+         [] reverse(X) then {List.reverse {Mix P2T X}} | {Mix P2T Music.2}
+         [] repeat(amount:X 1:Y) then {Repeat X {Mix P2T Y}} | {Mix P2T Music.2}
+         [] loop(seconds:X 1:Y) then {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} | {Mix P2T Music.2}
+         [] clip(low:X high:Y 1:Z) then {Clip X Y {Mix P2T Z}} | {Mix P2T Music.2}
+         [] echo(delay:X decay:Y 1:Z) then {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} {Mix P2T Z}} | {Mix P2T Music.2}
+         [] cut(start:X finish:Y 1:Z) then {Cut X Y {Mix P2T Z}} | {Mix P2T Music.2}
+         [] fade(start:X out:Y Z) then {Fade X Y {Mix P2T Z}} | {Mix P2T Music.2}
          else
             nil
          end
       end
+   end
+
+   fun{Mix P2T Music}
+      {Flatten {MixAux P2T Music}}
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -244,10 +248,9 @@ local
          nil
       else
          case Music.1
-         of nil then nil
+         of nil then {PartitionFreq Music.2 P2T}
          [] silence(duration:_) then {Append {SampleFrequency 0.0 Music.1.duration*44100.0 0.0} {PartitionFreq Music.2 P2T}}
          [] _|_ then {Append {Merge {PartitionFreqChord Music.1 1.0/{IntToFloat {List.length Music.1}} P2T}} {PartitionFreq Music.2 P2T}}
-         [] nil then {PartitionFreq Music.2 P2T}
          else
             {Append {SampleFrequency {Frequency {GetNoteHeight Music.1}} Music.1.duration*44100.0 0.0} {PartitionFreq Music.2 P2T}}
          end
@@ -341,13 +344,11 @@ local
    end
 
    fun {Repeat Amount Music}
-      fun {RepeatAcc Amount Music Acc}
-         if Amount == 0 then {Flatten {List.reverse Acc}}
-         else
-            {RepeatAcc Amount-1 Music Music|Acc}
-         end
+      if(Amount == 0) then
+         nil
+      else
+         Music | {Repeat Amount-1 Music}
       end
-      in {RepeatAcc Amount Music nil}
    end
    
    
@@ -379,14 +380,16 @@ local
 
    fun {Fade Start Out Music}
       {Append {FadeIn 1.0/(Start*44100.0) 0.0 {List.take Music {List.length Music}-({FloatToInt Out}*44100)}} 
-               {FadeOut 1.0/(Out*44100.0) 1.0 {List.drop Music {List.length Music}-{FloatToInt (Out*44100.0)}}}}
+               {FadeOut 1.0/(Out*44100.0) 1.0 {List.drop Music {List.length Music}-({FloatToInt (Out)}*44100)-1}}}
    end
 
    fun {FadeIn Increment CurrentIncrement Music}
       if(CurrentIncrement>=1.0) then
          Music
+      else if(Music == nil) then
+         nil
       else
-         Music.1*CurrentIncrement | {FadeIn Increment CurrentIncrement+Increment Music.2}
+         Music.1*CurrentIncrement | {FadeIn Increment CurrentIncrement+Increment Music.2} end
       end
    end
 
@@ -457,7 +460,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
    %{Browse {PartitionToTimedList [drone(amount:3 note:a#4)]}}
-   %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:3.0 out:2.0)] 'outfade.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4 [nil]])] start:3.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4])] start:1.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [wave('wave/animals/cat.wav')] 'outduck.wav'}}
@@ -473,6 +476,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
    %{Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
+   {Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
    {Browse "OK"}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
