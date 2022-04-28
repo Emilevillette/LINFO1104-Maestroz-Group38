@@ -353,7 +353,13 @@ local
    
    
    fun {Loop Duration Music MusicLength}
-         {Append {Repeat {FloatToInt {Floor Duration/MusicLength}} Music} {List.take Music ({FloatToInt Duration - MusicLength*{Floor Duration/MusicLength}})*44100}}
+      if(Duration>0.0 andthen Duration<MusicLength) then
+         {List.take Music {FloatToInt Duration*44100.0}}
+      else if(Duration>=MusicLength) then
+         {Append Music {Loop Duration-MusicLength Music MusicLength}}
+      else
+         nil end
+      end
    end
 
    fun {Clip Low High Music}
