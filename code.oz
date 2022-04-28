@@ -213,8 +213,7 @@ local
          [] partition(X) then {PartitionFreq {P2T X} P2T} | {Mix P2T Music.2}
          [] wave(X) then {Project.readFile CWD#X} | {Mix P2T Music.2}
          [] merge(X) then 
-            {Browse {List.reverse {MergeAux2 X P2T}}}
-            {Merge {List.reverse {MergeAux2 X P2T}}} | {Mix P2T Music.2}
+            {Merge {MergeAux2 X P2T}} | {Mix P2T Music.2}
          [] reverse(X) then {List.reverse {Mix P2T X}} | {Mix P2T Music.2}
          [] repeat(amount:X 1:Y) then {Repeat X {Mix P2T Y}} | {Mix P2T Music.2}
          [] loop(seconds:X 1:Y) then {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} | {Mix P2T Music.2}
@@ -290,7 +289,6 @@ local
    %end
 
    fun {MergeAux2 Musics P2T}
-      %{Browse Musics}
       case Musics
       of nil then nil 
       [] H|T then
@@ -310,7 +308,6 @@ local
          end
       end
       in 
-         %{Browse Musics}
          {MergeAcc Musics nil} 
    end
 
@@ -346,9 +343,6 @@ local
          end
       end
    in
-      %{Browse 'BEGINLIST'}
-      %{Browse L1}
-      %{Browse 'ENDLIST'}
       {SumTwoListsAcc L1 L2 nil}
    end
 
@@ -462,16 +456,19 @@ in
    %{Browse {Merge {MergeAux2 [0.5#[samples([0.9 0.4 ~1.2 8.5 5.2])] 0.6#[samples([0.9 0.4 ~1.2])] 0.8#[samples([0.9 0.4 ~1.2])]] PartitionToTimedList}}}
    %{Browse {Multiply 0.5#[5.0 6.0 8.0]}}
    %{Browse {MergeAux2 [0.5#[samples([0.2 0.4 0.6])] 0.25#[samples([0.4 0.8 0.8])]] PartitionToTimedList}}
+   {Browse {Mix PartitionToTimedList [merge([0.5#[samples([0.2 0.4 0.6])] 0.25#[samples([0.4 0.8 0.8])]])]}}
    %{Browse {Repeat 5 [0.9 9.0 4.0]}}
    %{Browse {Frequency 0}}
    %{Browse {SumTwoLists [5.0 6.0 8.0 7.0] [0.9 0.4 ~1.2 8.5 5.2]}}
    %{Browse {Clip ~0.4 0.8 [0.87 ~0.7 ~0.3 0.5]}}
    %{Browse {Mix PartitionToTimedList [partition([silence(duration:2.0)])]}}
    %{Browse {MergeAux [0.3#[partition([c d e f g])] 0.5#[partition([e f e c d])]] PartitionToTimedList}}
-   %{Browse {Mix PartitionToTimedList [partition([duration(seconds:0.001 1:[partition([c])])])]}}
-   %{Browse {Mix PartitionToTimedList [partition([duration(seconds:0.001 1:[partition([e])])])]}}
-   {Browse {MergeAux2 [0.5#[partiton([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]] PartitionToTimedList}}
-   %{Browse {Mix PartitionToTimedList [merge([0.5#[partiton([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]])]}}
+   {Browse {Mix PartitionToTimedList [partition([duration(seconds:0.001 1:[partition([c])])])]}}
+   {Browse {Mix PartitionToTimedList [partition([duration(seconds:0.001 1:[partition([e])])])]}}
+   %{Browse {MergeAux2 [0.5#[partition([duration(seconds:0.001 1:[partition([c])])])] 0.5#[samples([0.2 0.4 0.6])]] PartitionToTimedList}}
+   %{Browse {MergeAux2 [0.5#[samples([0.2 0.4 0.6])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]] PartitionToTimedList}}
+   %{Browse {MergeAux2 [0.5#[partition([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]] PartitionToTimedList}}
+   {Browse {Mix PartitionToTimedList [merge([0.3#[partition([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]])]}}
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
@@ -479,7 +476,7 @@ in
    %{Browse {PartitionToTimedList [drone(amount:3 note:a#4)]}}
    %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([a4 a4 a4 a4 a4 a4 [nil]])] start:3.0 out:2.0)] 'outfade.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [fade(1:[partition([duration(seconds: 0.002 1:[a4 a4])])] start:0.001 out:0.001)] 'outfade.wav'}}
-   {Browse {Mix PartitionToTimedList [fade(1:[partition([duration(seconds: 0.0002 1:[a4])])] start:0.0001 out:0.0001)]}}
+   %{Browse {Mix PartitionToTimedList [fade(1:[partition([duration(seconds: 0.0002 1:[a4])])] start:0.0001 out:0.0001)]}}
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [loop(seconds:10.0 1:[wave('wave/animals/duck_quack.wav')])] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
