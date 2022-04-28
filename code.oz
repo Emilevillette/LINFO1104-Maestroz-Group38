@@ -6,8 +6,8 @@ local
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
    %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   CWD = 'C:/Users/emile/OneDrive/2021-2022/Q2/Oz/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   %CWD = 'C:/Users/emile/OneDrive/2021-2022/Q2/Oz/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -434,8 +434,8 @@ in
    %{Browse {MergeAux [0.5#[samples([0.2 0.4 0.6])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]] PartitionToTimedList}}
    %{Browse {MergeAux [0.5#[partition([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]] PartitionToTimedList}}
    %{Browse {Mix PartitionToTimedList [merge([0.3#[partition([duration(seconds:0.001 1:[partition([[c]])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]])]}}
-   {Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
-   {Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
+   %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
+   %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
    %{Browse {PartitionToTimedList [drone(amount:3 note:a#4)]}}
@@ -462,6 +462,7 @@ in
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
    %{Browse {Mix PartitionToTimedList [partition([[c d]])]}}
+   {Browse {Project.run Mix PartitionToTimedList Music3 'outexample1.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([a silence transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence]) stretch(factor:3.0 [silence c c c [c c#5 c]]) duration(seconds:6.0 [silence b c5 d8 [d#3 e f]]) drone(amount:4 note:g#5) drone(amount:3 note:silence)]) ] 'out.wav'}}
    %{Browse {List.length Music.1.1}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence])])] 'out.wav'}}
