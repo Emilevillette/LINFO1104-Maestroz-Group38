@@ -217,7 +217,7 @@ local
          [] repeat(amount:X 1:Y) then {Repeat X {Mix P2T Y}} | {Mix P2T Music.2}
          [] loop(seconds:X 1:Y) then {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} | {Mix P2T Music.2}
          [] clip(low:X high:Y 1:Z) then {Clip X Y {Mix P2T Z}} | {Mix P2T Music.2}
-         [] echo(delay:X decay:Y 1:Z) then {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} {Mix P2T Z} P2T} | {Mix P2T Music.2}
+         [] echo(delay:X decay:Y 1:Z) then {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} Z P2T} | {Mix P2T Music.2}
          [] cut(start:X finish:Y 1:Z) then {Cut X Y {Mix P2T Z}} | {Mix P2T Music.2}
          [] fade(start:X out:Y Z) then {Fade X Y {Mix P2T Z}} | {Mix P2T Music.2}
          else
@@ -236,7 +236,7 @@ local
       {Pow 2.0 ({IntToFloat Hauteur}/12.0)} * 440.0
    end
 
-   fun{GetNoteHeight ExtendedNote} %TODO: CHECK IF THERE NEEDS TO BE A SPECIAL PROCESSING FOR CHORDS, NO MENTION OF IT IN THE SPECIFIATIONS
+   fun{GetNoteHeight ExtendedNote}
       if(ExtendedNote.sharp == false) then
          (NoteListNumber.(ExtendedNote.name) - NoteListNumber.a) + (12*ExtendedNote.octave - 48) 
       else
@@ -280,7 +280,6 @@ local
       if(Musics == nil) then
          nil
       else
-         %{Browse Musics.1}
          case Musics.1
          of I#M then
             {SumTwoLists {Multiply I {Mix P2T M}} {Merge Musics.2 P2T}}
