@@ -217,7 +217,7 @@ local
          [] repeat(amount:X 1:Y) then {Repeat X {Mix P2T Y}} | {Mix P2T Music.2}
          [] loop(seconds:X 1:Y) then {Loop X {Mix P2T Y} {IntToFloat {List.length {Mix P2T Y}}}/44100.0} | {Mix P2T Music.2}
          [] clip(low:X high:Y 1:Z) then {Clip X Y {Mix P2T Z}} | {Mix P2T Music.2}
-         [] echo(delay:X decay:Y 1:Z) then {Echo Y {PartitionFreq {P2T [partition([silence(duration:X)])]} P2T} Z P2T} | {Mix P2T Music.2}
+         [] echo(delay:X decay:Y 1:Z) then {Echo X Y Z P2T} | {Mix P2T Music.2}
          [] cut(start:X finish:Y 1:Z) then {Cut X Y {Mix P2T Z}} | {Mix P2T Music.2}
          [] fade(start:X out:Y Z) then {Fade X Y {Mix P2T Z}} | {Mix P2T Music.2}
          else
@@ -347,8 +347,12 @@ local
       in {ClipAcc Low High Music nil}
    end
 
-   fun {Echo Decay Mixer Music P2T}
-      {Merge [Decay#{Append Mixer Music} 1.0#Music] P2T}
+   fun {EchoAux Delay Music P2T}
+      {Append {Mix P2T [partition([silence(duration:Delay)])]} {Mix P2T Music}}
+   end
+
+   fun {Echo Delay Decay Music P2T}
+      {Merge [Decay#{EchoAux Delay Music P2T} 1.0#Music] P2T}
    end
 
    fun {Fade Start Out Music}
@@ -435,7 +439,11 @@ in
    %{Browse {MergeAux [0.5#[partition([duration(seconds:0.001 1:[partition([c])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]] PartitionToTimedList}}
    %{Browse {Mix PartitionToTimedList [merge([0.3#[partition([duration(seconds:0.001 1:[partition([[c]])])])] 0.5#[partition([duration(seconds:0.001 1:[partition([e])])])]])]}}
    %{Browse {Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:1.0 decay:0.4)]}}
-   %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:0.5 decay:0.5)] 'outecho.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:3.0 decay:0.5)] 'outecho.wav'}}
+   %{Browse {Append {Mix PartitionToTimedList [partition([silence(duration:0.0001)])]} {Mix PartitionToTimedList [samples([0.1 0.2 0.3])]}}}
+   %{Browse {EchoAux 0.0001 [partition([c])] PartitionToTimedList}}
+   {Browse {Mix PartitionToTimedList [echo(delay:0.0001 decay:0.5 1:[samples([0.1 0.2 0.3])])]}}
+   %{Browse {Merge [0.5#{Mix PartitionToTimedList [[partition([silence(duration:0.0001)])]} [samples([0.1 0.2 0.3 0.4 0.5])]] 1.0#[samples([0.1 0.2 0.3 0.4 0.5])]] PartitionToTimedList}}
    %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
    %{Browse {PartitionToTimedList [drone(amount:3 note:a#4)]}}
@@ -455,7 +463,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outloop.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
-   %{Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
+   {Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
    {Browse 'OK'}
    %{Browse Music}
@@ -464,7 +472,8 @@ in
    %{Browse {Mix PartitionToTimedList [partition([[c d]])]}}
    %{Browse Music3}
    %{Browse {Project.run Mix PartitionToTimedList Music3 'example2.wav'}}
-   {Browse {Project.run Mix PartitionToTimedList Music3 'example1.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music3 'example1.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music4 'funoz2.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([a silence transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence]) stretch(factor:3.0 [silence c c c [c c#5 c]]) duration(seconds:6.0 [silence b c5 d8 [d#3 e f]]) drone(amount:4 note:g#5) drone(amount:3 note:silence)]) ] 'out.wav'}}
    %{Browse {List.length Music.1.1}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence])])] 'out.wav'}}
