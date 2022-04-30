@@ -379,14 +379,14 @@ local
    end
 
    fun {Cut Start Finish Music}
-      {CutAux {IntToFloat {FloatToInt Start*44100.0}} {IntToFloat {FloatToInt (Finish-Start)*44100.0}} 1.0 Music nil}
+      {CutAux {IntToFloat {FloatToInt Start*44100.0}} {IntToFloat {FloatToInt (Finish-Start)*44100.0}} 0.0 Music nil}
    end
 
    fun {CutAux Start NumberOfElems Pos Music Acc}
       if(NumberOfElems==0.0) then
          {List.reverse Acc}
       else
-         if({FloatToInt Pos}=<{FloatToInt Start}) then
+         if(Pos<Start) then
             {CutAux Start NumberOfElems Pos+1.0 Music.2 Acc}
          else
             if(Music==nil) then
