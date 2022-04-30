@@ -352,7 +352,7 @@ local
    end
 
    fun {Echo Delay Decay Music P2T}
-      {Merge [Decay#{EchoAux Delay Music P2T} 1.0#Music] P2T}
+      {Merge [Decay#[samples({EchoAux Delay Music P2T})] 1.0#Music] P2T}
    end
 
    fun {Fade Start Out Music}
