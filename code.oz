@@ -348,6 +348,9 @@ local
    end
 
    fun {EchoAux Delay Music P2T}
+      %A in
+      %A = {Mix P2T [partition([silence(duration:Delay)])]}
+      %{Append A.2 {Mix P2T Music}}
       {Append {Mix P2T [partition([silence(duration:Delay)])]} {Mix P2T Music}}
    end
 
@@ -446,7 +449,11 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:3.0 decay:0.5)] 'outecho.wav'}}
    %{Browse {Append {Mix PartitionToTimedList [partition([silence(duration:0.0001)])]} {Mix PartitionToTimedList [samples([0.1 0.2 0.3])]}}}
    %{Browse {EchoAux 0.0001 [partition([c])] PartitionToTimedList}}
+<<<<<<< HEAD
    %{Browse {Mix PartitionToTimedList [echo(delay:0.0001 decay:0.5 1:[samples([0.1 0.2 0.3])])]}}
+=======
+   {Browse {Mix PartitionToTimedList [echo(delay:0.0001 decay:0.5 1:[samples([2000.0 2000.0 4000.0 4000.0 6000.0 6000.0])])]}}
+>>>>>>> 48c09ab93d697fedfb648e66935203d88203b2c3
    %{Browse {Merge [0.5#{Mix PartitionToTimedList [[partition([silence(duration:0.0001)])]} [samples([0.1 0.2 0.3 0.4 0.5])]] 1.0#[samples([0.1 0.2 0.3 0.4 0.5])]] PartitionToTimedList}}
    %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
