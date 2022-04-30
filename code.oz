@@ -267,11 +267,11 @@ local
    end
 
    fun {SampleFrequency Frequency NumberOfSamples Pos}
-      if(Pos >= NumberOfSamples) then
+      if({FloatToInt Pos} == {FloatToInt NumberOfSamples}) then
          nil
       else
           0.5*{Sin (2.0*3.141592658979323846*Frequency*Pos)/44100.0} | {SampleFrequency Frequency NumberOfSamples Pos+1.0}
-      end
+      end 
    end
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -348,9 +348,6 @@ local
    end
 
    fun {EchoAux Delay Music P2T}
-      %A in
-      %A = {Mix P2T [partition([silence(duration:Delay)])]}
-      %{Append A.2 {Mix P2T Music}}
       {Append {Mix P2T [partition([silence(duration:Delay)])]} {Mix P2T Music}}
    end
 
@@ -374,11 +371,11 @@ local
    end
 
    fun{FadeOut Increment CurrentIncrement Music}
-      if(Music == nil) then
+      {if(Music == nil) then
          nil
       else
          Music.1*CurrentIncrement | {FadeOut Increment CurrentIncrement-Increment Music.2}
-      end
+      end}
    end
    
    fun {Cut Start Finish Music}
@@ -445,7 +442,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [echo(1:[partition([c d e f g])] delay:3.0 decay:0.5)] 'outecho.wav'}}
    %{Browse {Append {Mix PartitionToTimedList [partition([silence(duration:0.0001)])]} {Mix PartitionToTimedList [samples([0.1 0.2 0.3])]}}}
    %{Browse {EchoAux 0.0001 [partition([c])] PartitionToTimedList}}
-   {Browse {Mix PartitionToTimedList [echo(delay:0.0001 decay:0.5 1:[samples([2000.0 2000.0 4000.0 4000.0 6000.0 6000.0])])]}}
+   %{Browse {Mix PartitionToTimedList [echo(delay:0.00011338 decay:0.5 1:[samples([2000.0 2000.0 4000.0 4000.0 6000.0 6000.0])])]}}
    %{Browse {Merge [0.5#{Mix PartitionToTimedList [[partition([silence(duration:0.0001)])]} [samples([0.1 0.2 0.3 0.4 0.5])]] 1.0#[samples([0.1 0.2 0.3 0.4 0.5])]] PartitionToTimedList}}
    %{Browse {Project.run Mix PartitionToTimedList [repeat(1:[partition([c d])] amount:4)] 'outrep.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [clip(1:[partition([c2 c3 a4 a5])] high:0.9 low:~0.2)] 'outclip.wav'}}
