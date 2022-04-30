@@ -5,9 +5,9 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
    %CWD = 'C:/Users/emile/OneDrive/2021-2022/Q2/Oz/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -377,19 +377,23 @@ local
          Music.1*CurrentIncrement | {FadeOut Increment CurrentIncrement-Increment Music.2}
       end}
    end
-   
+
    fun {Cut Start Finish Music}
-      {AppendCut (Finish-Start)*44100.0 {List.drop Music {FloatToInt Start*44100.0} } Start==0.0}
+      {CutAux Start*44100.0 Finish*44100.0-Start*44100.0 0.0 Music nil}
    end
 
-   fun {AppendCut NumberOfElems Music StartAtZero}
-      if(NumberOfElems==0.0 andthen StartAtZero==false) then 
-         nil
+   fun {CutAux Start NumberOfElems Pos Music Acc}
+      if(NumberOfElems==0.0) then
+         {List.reverse Acc}
       else
-         if(Music == nil) then 
-            0.0 | {AppendCut NumberOfElems-1.0 nil false}
+         if(Pos=<Start) then
+            {CutAux Start NumberOfElems Pos+1.0 Music.2 Acc}
          else
-            Music.1 | {AppendCut NumberOfElems-1.0 Music.2 false}
+            if(Music==nil) then
+               {CutAux Start NumberOfElems-1.0 Pos+1.0 nil 0.0|Acc}
+            else
+               {CutAux Start NumberOfElems-1.0 Pos+1.0 Music.2 Music.1|Acc}
+            end
          end
       end
    end
@@ -453,7 +457,7 @@ in
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [loop(seconds:10.0 1:[wave('wave/animals/duck_quack.wav')])] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
-   %{Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
+   {Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
@@ -463,7 +467,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList [loop(1:[partition([c d e f g])] seconds:16.0)] 'outloop.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
-   {Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
    {Browse 'OK'}
    %{Browse Music}
