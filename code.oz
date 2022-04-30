@@ -366,16 +366,16 @@ local
       else if(Music == nil) then
          nil
       else
-         Music.1*CurrentIncrement | {FadeIn Increment CurrentIncrement+Increment Music.2} end
+         Music.1*CurrentIncrement | {FadeIn Increment (CurrentIncrement+Increment) Music.2} end
       end
    end
 
    fun{FadeOut Increment CurrentIncrement Music}
-      {if(Music == nil) then
+      if(Music == nil) then
          nil
       else
          Music.1*CurrentIncrement | {FadeOut Increment CurrentIncrement-Increment Music.2}
-      end}
+      end
    end
 
    fun {Cut Start Finish Music}
@@ -457,9 +457,10 @@ in
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [loop(seconds:10.0 1:[wave('wave/animals/duck_quack.wav')])] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
-   {Browse {Mix PartitionToTimedList [cut(1:[samples([0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 1.1 1.2 1.3 1.4 1.5])] finish:0.00022676 start:0.00011338)]}}
+   %{Browse {Mix PartitionToTimedList [cut(1:[samples([0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 1.1 1.2 1.3 1.4 1.5])] finish:0.00022676 start:0.00011338)]}}
    %{Browse {IntToFloat {FloatToInt 0.00011338*44100.0}}}
    %{Browse {IntToFloat {FloatToInt (0.00022676-0.00011338)*44100.0}}}
+   {Browse {Mix PartitionToTimedList [fade(start:0.00011338 out:0.00011338 [repeat(amount:12 [samples([1.0])])])]}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
@@ -477,7 +478,7 @@ in
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
    %{Browse {Mix PartitionToTimedList [partition([[c d]])]}}
    %{Browse Music3}
-   %{Browse {Project.run Mix PartitionToTimedList Music3 'example2.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music2 'gravity.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music3 'example1.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music4 'funoz2.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([a silence transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence]) stretch(factor:3.0 [silence c c c [c c#5 c]]) duration(seconds:6.0 [silence b c5 d8 [d#3 e f]]) drone(amount:4 note:g#5) drone(amount:3 note:silence)]) ] 'out.wav'}}
