@@ -357,21 +357,23 @@ local
 
    fun {Fade Start Out Music}
       {Append {FadeIn 1.0/(Start*44100.0) 0.0 {List.take Music {List.length Music}-({FloatToInt Out}*44100)}} 
-               {FadeOut 1.0/(Out*44100.0) 1.0 {List.drop Music {List.length Music}-({FloatToInt (Out)}*44100)-1}}}
+               {FadeOut 1.0/(Out*44100.0) 1.0 {List.drop Music {List.length Music}-({FloatToInt Start}*44100)-1}}}
    end
 
    fun {FadeIn Increment CurrentIncrement Music}
       if(CurrentIncrement>=1.0) then
          Music
-      else if(Music == nil) then
+      elseif(Music == nil) then
          nil
       else
-         Music.1*CurrentIncrement | {FadeIn Increment (CurrentIncrement+Increment) Music.2} end
+         Music.1*CurrentIncrement | {FadeIn Increment (CurrentIncrement+Increment) Music.2}
       end
    end
 
    fun{FadeOut Increment CurrentIncrement Music}
-      if(Music == nil) then
+      if(CurrentIncrement=<0.0) then
+         Music
+      elseif(Music == nil) then
          nil
       else
          Music.1*CurrentIncrement | {FadeOut Increment CurrentIncrement-Increment Music.2}
@@ -461,6 +463,7 @@ in
    %{Browse {IntToFloat {FloatToInt 0.00011338*44100.0}}}
    %{Browse {IntToFloat {FloatToInt (0.00022676-0.00011338)*44100.0}}}
    {Browse {Mix PartitionToTimedList [fade(start:0.00011338 out:0.00011338 [repeat(amount:12 [samples([1.0])])])]}}
+   %{Browse {Mix PartitionToTimedList [repeat(amount:12 [samples([1.0])])]}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
