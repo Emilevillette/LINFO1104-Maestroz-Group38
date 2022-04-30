@@ -5,9 +5,9 @@ local
 
    %TODO: MAKE SURE THIS IS COMMENTED WHEN SUBMITTING THE PROJECT
    % Uncomment one line or the other depending on who you are
-   CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
+   %CWD = '/home/emile/OZ/LINFO1104-Maestroz-Group38/' % Emile's directory 
    %CWD = 'C:/Users/emile/OneDrive/2021-2022/Q2/Oz/LINFO1104-Maestroz-Group38/' % Emile's directory 
-   %CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
+   CWD = '/home/twelvedoctor/OZ/LINFO1104-Maestroz-Group38/' % Tania's directory
    [Project] = {Link [CWD#'Project2022.ozf']}
    Time = {Link ['x-oz://boot/Time']}.1.getReferenceTime
 
@@ -379,14 +379,14 @@ local
    end
 
    fun {Cut Start Finish Music}
-      {CutAux Start*44100.0 Finish*44100.0-Start*44100.0 0.0 Music nil}
+      {CutAux {IntToFloat {FloatToInt Start*44100.0}} {IntToFloat {FloatToInt (Finish-Start)*44100.0}} 1.0 Music nil}
    end
 
    fun {CutAux Start NumberOfElems Pos Music Acc}
       if(NumberOfElems==0.0) then
          {List.reverse Acc}
       else
-         if(Pos=<Start) then
+         if({FloatToInt Pos}=<{FloatToInt Start}) then
             {CutAux Start NumberOfElems Pos+1.0 Music.2 Acc}
          else
             if(Music==nil) then
@@ -457,7 +457,9 @@ in
    %{Browse {Mix PartitionToTimedList [wave('wave/animals/pig.wav')]}}
    %{Browse {Project.run Mix PartitionToTimedList [loop(seconds:10.0 1:[wave('wave/animals/duck_quack.wav')])] 'outduck.wav'}}
    %{Browse {Cut 1.0 3.0 {Mix PartitionToTimedList [partition([c d e f g])]}}}
-   {Browse {Project.run Mix PartitionToTimedList [cut(1:[partition([c d e f g])] start:1.0 finish:10.0)] 'outcut.wav'}}
+   {Browse {Mix PartitionToTimedList [cut(1:[samples([0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 1.1 1.2 1.3 1.4 1.5])] finish:0.00022676 start:0.00011338)]}}
+   %{Browse {IntToFloat {FloatToInt 0.00011338*44100.0}}}
+   %{Browse {IntToFloat {FloatToInt (0.00022676-0.00011338)*44100.0}}}
    % Calls your code, prints the result and outputs the result to `out.wav`.
    % You don't need to modify this.
    %{Browse {PartitionToTimedList [partition([transpose(semitones:~2 [c#4 c c])])]}}
