@@ -42,19 +42,21 @@ local
                     stretch(factor:2.0 [d5]) stretch(factor:2.0 [[d3 d2 d1]])
     ])]
 
-    Partition = {Flatten [FirstLine SecondLine ThirdLine FourthLine FifthLine SixthLine SeventhLine]}
+    Partition = {Flatten [FirstLine SecondLine ThirdLine FourthLine FifthLine SixthLine]}
     
-    Part1 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_a4.wav')] 1.0#[wave('wave/instruments/woody_f5.wav')]])
-    Part2 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_d5.wav')]])
-    Part3 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_f5.wav')]])
-    Part4 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_a5.wav')]])
-    Part5 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_e5.wav')]]) 
-    Part6 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_c5#.wav')]])
-    Part7 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_a5.wav')]])
-    Part8 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_c5#.wav')]])
+    Part1 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_a4.wav')] 1.0#[wave('wave/instruments/bziaou_f5.wav')]])])
+    Part2 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_d5.wav')]])])
+    Part3 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_f5.wav')]])])
+    Part4 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_a5.wav')]])])
+    Part5 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_e5.wav')]])])
+    Part6 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_c5#.wav')]])])
+    Part7 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_a5.wav')]])])
+    Part8 = cut(start:0.0 finish:0.25 [merge([1.0#[wave('wave/instruments/bziaou_d3.wav')] 1.0#[wave('wave/instruments/bziaou_a3.wav')] 1.0#[wave('wave/instruments/bziaou_d4.wav')] 1.0#[wave('wave/instruments/bziaou_c5#.wav')]])])
+    Part9 = cut(start:0.0 finish:0.5 [wave('wave/instruments/bziaou_d5.wav')])
+    Part10 = cut(start:0.0 finish:0.5 [wave('wave/instruments/bziaou_d3.wav')])
     
     Duck = repeat(amount:2 1:[wave('wave/animals/duck_quack.wav')])
     
 in
-    [echo(delay:0.5 decay:0.2 1:[partition(Partition)]) Part1 Part2 Part3 Part4 Part5 Part6 Part7 Part8 Duck reverse([Duck])]
+    [fade(start:0.3 out:0.6 1:[merge([0.7#[wave('wave/animals/owl.wav')] 1.0#[wave('wave/animals/wolf.wav')]])]) fade(start:0.1 out:0.2 [echo(delay:0.5 decay:0.2 1:[partition(Partition)]) merge([1.0#[partition(SeventhLine)] 0.4#[Part1 Part2 Part3 Part4 Part5 Part6 Part7 Part8 Part9 Part10]])]) Duck reverse([Duck])]
 end
