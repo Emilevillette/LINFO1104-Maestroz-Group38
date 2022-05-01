@@ -488,7 +488,7 @@ in
    %{Browse {Mix PartitionToTimedList [partition([a b c#4])]}}
    %{Browse {Mix PartitionToTimedList [partition([[c d]])]}}
    %{Browse Music3}
-   %{Browse {Project.run Mix PartitionToTimedList Music2 'gravity.wav'}}
+   {Browse {Project.run Mix PartitionToTimedList Music2 'gravity.wav'}}
    {Browse {Project.run Mix PartitionToTimedList Music3 'example1.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList Music4 'funoz2.wav'}}
    %{Browse {Project.run Mix PartitionToTimedList [partition([a silence transpose(semitones:~2 [c#4 c c stretch(factor:2.0 [c d e]) silence]) stretch(factor:3.0 [silence c c c [c c#5 c]]) duration(seconds:6.0 [silence b c5 d8 [d#3 e f]]) drone(amount:4 note:g#5) drone(amount:3 note:silence)]) ] 'out.wav'}}

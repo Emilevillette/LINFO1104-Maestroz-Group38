@@ -24,6 +24,6 @@ local
 
 
 in
-    [partition(Partition) cut(start:1.0 finish:2.7 1:[wave('wave/animals/wolf.wav')]) merge(ForMerge) repeat(amount:2 1:[partition(ForRepeat)]) loop(seconds:5.0 1:[wave('wave/animals/duck_quack.wav')]) echo(delay:0.5 decay:0.3 1:[wave('wave/animals/sheep.wav')]) fade(start:0.0001 out:0.0001 1:[reverse([partition(DebutGravityFalls)])]) clip(low:~0.5 high:0.5 1:[merge([0.5#[wave('wave/animals/cow.wav')] 0.5#[wave('wave/animals/horse.wav')]])]) ]
+    [partition(Partition) cut(start:1.0 finish:2.7 1:[wave('wave/animals/wolf.wav')]) merge(ForMerge) repeat(amount:2 1:[partition(ForRepeat)]) loop(seconds:5.0 1:[wave('wave/animals/frogs.wav')]) echo(delay:0.5 decay:0.3 1:[wave('wave/animals/sheep.wav')]) fade(start:0.0001 out:0.0001 1:[reverse([partition(DebutGravityFalls)])]) clip(low:~0.5 high:0.5 1:[merge([0.5#[wave('wave/animals/cow.wav')] 0.5#[wave('wave/animals/horse.wav')]])]) ]
     
 end 

@@ -44,5 +44,5 @@ local
 
     Partition = {Flatten [FirstLine SecondLine ThirdLine FourthLine FifthLine SixthLine SeventhLine]}
 in
-    [partition(Partition)]
+    [merge([0.08#[loop(seconds:6.0 1:[wave('wave/animals/duck_quack.wav')])] 0.92#[partition(Partition) cut(start:1.0 finish:3.0 1:[reverse([partition(SeventhLine)])])]])]
 end
