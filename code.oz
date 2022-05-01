@@ -481,7 +481,7 @@ in
    %{Browse {Project.run Mix PartitionToTimedList Music 'out.wav'}}
    %{Browse {PartitionToTimedList Music2}}
    %{Browse {Project.run Mix PartitionToTimedList Music3 'out3.wav'}}
-   %{Browse {Project.run Mix PartitionToTimedList Music2 'out2.wav'}}
+   %{Browse {Project.run Mix PartitionToTimedList Music2 'creation.wav'}}
    {Browse 'OK'}
    %{Browse Music}
    %{Browse  {PartitionFreq {PartitionToTimedList Music}}}
