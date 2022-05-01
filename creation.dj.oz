@@ -43,6 +43,18 @@ local
     ])]
 
     Partition = {Flatten [FirstLine SecondLine ThirdLine FourthLine FifthLine SixthLine SeventhLine]}
+    
+    Part1 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_a4.wav')] 1.0#[wave('wave/instruments/woody_f5.wav')]])
+    Part2 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_d5.wav')]])
+    Part3 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_f5.wav')]])
+    Part4 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_a5.wav')]])
+    Part5 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_e5.wav')]]) 
+    Part6 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_c5#.wav')]])
+    Part7 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_a5.wav')]])
+    Part8 = merge([1.0#[wave('wave/instruments/woody_d3.wav')] 1.0#[wave('wave/instruments/woody_a3.wav')] 1.0#[wave('wave/instruments/woody_d4.wav')] 1.0#[wave('wave/instruments/woody_c5#.wav')]])
+    
+    Duck = repeat(amount:2 1:[wave('wave/animals/duck_quack.wav')])
+    
 in
-    [merge([0.08#[loop(seconds:6.0 1:[wave('wave/animals/duck_quack.wav')])] 0.92#[partition(Partition) cut(start:1.0 finish:3.0 1:[reverse([partition(SeventhLine)])])]])]
+    [echo(delay:0.5 decay:0.2 1:[partition(Partition)]) Part1 Part2 Part3 Part4 Part5 Part6 Part7 Part8 Duck reverse([Duck])]
 end
